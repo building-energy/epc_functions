@@ -47,9 +47,19 @@ def create_epc_domestic_certificates_table(
         ):
     """Creates a new epc domestic certificates table in the sqlite database.
     
-    This will drop any existing table.
+    No action if table already exists.
     
     """
+    
+    if _check_if_table_exists_in_database(
+            fp_database,
+            'epc_domestic_certificates'
+            ):
+        if verbose:
+            print('---CREATE TABLE---')
+            print('Table "epc_domestic_certificates" already exists in database - no action')
+        return
+    
     
     # create query
     datatype_map={
@@ -87,10 +97,6 @@ def create_epc_domestic_certificates_table(
     with sqlite3.connect(fp_database) as conn:
         c = conn.cursor()
         
-        # delete table if already exists
-        c.execute("DROP TABLE IF EXISTS epc_domestic_certificates;")
-        conn.commit()
-    
         # create table
         c.execute(query)
         conn.commit()
@@ -103,9 +109,18 @@ def create_epc_domestic_recommendations_table(
         ):
     """Creates a new epc domestic recommendations table in the sqlite database.
     
-    This will drop any existing table.
+    No action if table already exists.
     
     """
+    if _check_if_table_exists_in_database(
+            fp_database,
+            'epc_domestic_recommendations'
+            ):
+        if verbose:
+            print('---CREATE TABLE---')
+            print('Table "epc_domestic_recommendations" already exists in database - no action')
+        return
+    
     
     datatype_map={
     'integer':'INTEGER',
@@ -236,7 +251,6 @@ def find_all_recommendations_csv_files_in_folder(
 def import_all_epc_domestic_csv_files_in_folder(
         fp_database,
         fp_folder,
-        drop_existing_tables=False,
         verbose=True
         ):
     """
@@ -248,15 +262,10 @@ def import_all_epc_domestic_csv_files_in_folder(
     # --- certificates ---
     
     # create certificates table if needed
-    if drop_existing_tables or \
-        not _check_if_table_exists_in_database(
-                fp_database,
-                'epc_domestic_certificates'
-                ):
-            
-        create_epc_domestic_certificates_table(
-            fp_database
-            )
+    create_epc_domestic_certificates_table(
+        fp_database,
+        verbose=verbose
+        )
     
     # import all certificates files into database
     for fp_csv in find_all_certificates_csv_files_in_folder(
@@ -271,15 +280,10 @@ def import_all_epc_domestic_csv_files_in_folder(
         
     # --- recommendations ---
     # create recommendations table if needed
-    if drop_existing_tables or \
-        not _check_if_table_exists_in_database(
-                fp_database,
-                'epc_domestic_recommendations'
-                ):
-            
-        create_epc_domestic_recommendations_table(
-            fp_database
-            )
+    create_epc_domestic_recommendations_table(
+        fp_database,
+        verbose=verbose
+        )
     
     # import all recommendations files into database
     for fp_csv in find_all_recommendations_csv_files_in_folder(

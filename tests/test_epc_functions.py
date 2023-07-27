@@ -181,7 +181,6 @@ class TestEPCFunctions(unittest.TestCase):
         epc_functions.import_all_epc_domestic_csv_files_in_folder(
             fp_database,
             fp_folder,
-            drop_existing_tables=True,
             verbose=True
             )
         
