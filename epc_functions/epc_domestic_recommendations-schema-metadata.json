@@ -1,0 +1,129 @@
+{
+    "@context": "http://www.w3.org/ns/csvw",
+    "@type": "Schema",
+    "primaryKey": [
+        "LMK_KEY",
+        "IMPROVEMENT_ITEM"
+    ],
+    "columns": [
+        {
+            "name": "LMK_KEY",
+            "titles": {
+                "und": [
+                    "LMK_KEY"
+                ]
+            },
+            "rdfs:label": {
+                "@value": "LMK_KEY"
+            },
+            "rdfs:comment": {
+                "@value": "Individual lodgement identifier. Guaranteed to be unique and can be used to identify a certificate in the downloads and the API."
+            },
+            "datatype": {
+                "base": "string"
+            }
+        },
+        {
+            "name": "IMPROVEMENT_ITEM",
+            "titles": {
+                "und": [
+                    "IMPROVEMENT_ITEM"
+                ]
+            },
+            "rdfs:label": {
+                "@value": "IMPROVEMENT_ITEM"
+            },
+            "rdfs:comment": {
+                "@value": "Incremental integer count for each improvement item related to a certificate."
+            },
+            "datatype": {
+                "base": "integer"
+            }
+        },
+        {
+            "name": "IMPROVEMENT_SUMMARY_TEXT",
+            "titles": {
+                "und": [
+                    "IMPROVEMENT_SUMMARY_TEXT"
+                ]
+            },
+            "rdfs:label": {
+                "@value": "IMPROVEMENT_SUMMARY_TEXT"
+            },
+            "rdfs:comment": {
+                "@value": ""
+            },
+            "datatype": {
+                "base": "string"
+            }
+        },
+        {
+            "name": "IMPROVEMENT_DESCR_TEXT",
+            "titles": {
+                "und": [
+                    "IMPROVEMENT_DESCR_TEXT"
+                ]
+            },
+            "rdfs:label": {
+                "@value": "IMPROVEMENT_DESCR_TEXT"
+            },
+            "rdfs:comment": {
+                "@value": ""
+            },
+            "datatype": {
+                "base": "string"
+            }
+        },
+        {
+            "name": "IMPROVEMENT_ID",
+            "titles": {
+                "und": [
+                    "IMPROVEMENT_ID"
+                ]
+            },
+            "rdfs:label": {
+                "@value": "IMPROVEMENT_ID"
+            },
+            "rdfs:comment": {
+                "@value": "Individual identifier for each improvement option"
+            },
+            "datatype": {
+                "base": "integer"
+            }
+        },
+        {
+            "name": "IMPROVEMENT_ID_TEXT",
+            "titles": {
+                "und": [
+                    "IMPROVEMENT_ID_TEXT"
+                ]
+            },
+            "rdfs:label": {
+                "@value": "IMPROVEMENT_ID_TEXT"
+            },
+            "rdfs:comment": {
+                "@value": "Text description for each improvement option. Relates directly to IMPROVEMENT_ID"
+            },
+            "datatype": {
+                "base": "string"
+            }
+        },
+        {
+            "name": "INDICATIVE_COST",
+            "titles": {
+                "und": [
+                    "INDICATIVE_COST"
+                ]
+            },
+            "rdfs:label": {
+                "@value": "INDICATIVE_COST"
+            },
+            "rdfs:comment": {
+                "@value": ""
+            },
+            "datatype": {
+                "base": "string"
+            }
+        }
+    ]
+}
