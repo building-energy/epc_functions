@@ -181,11 +181,11 @@ def import_epc_domestic_certificates_csv_file(
     command=f'sqlite3 {fp_database} -cmd ".mode csv" ".import --skip 1 {fp_csv} epc_domestic_certificates"'
     if verbose:
         print('---COMMAND LINE TO IMPORT DATA---')
-        print('Number of rows before import:', _get_row_count_in_database_table(fp_database,'epc_domestic_certificates'))
+        print('Number of rows before import:', _get_row_count_in_database_table(fp_database,'epc_domestic_certificates','LMK_KEY'))
         print(command)
     subprocess.run(command)
     if verbose:
-        print('Number of rows after import: ', _get_row_count_in_database_table(fp_database,'epc_domestic_certificates'))
+        print('Number of rows after import: ', _get_row_count_in_database_table(fp_database,'epc_domestic_certificates','LMK_KEY'))
     
     
 def import_epc_domestic_recommendations_csv_file(
@@ -200,11 +200,11 @@ def import_epc_domestic_recommendations_csv_file(
     command=f'sqlite3 {fp_database} -cmd ".mode csv" ".import --skip 1 {fp_csv} epc_domestic_recommendations"'
     if verbose:
         print('---COMMAND LINE TO IMPORT DATA---')
-        print('Number of rows before import:', _get_row_count_in_database_table(fp_database,'epc_domestic_recommendations'))
+        print('Number of rows before import:', _get_row_count_in_database_table(fp_database,'epc_domestic_recommendations','LMK_KEY'))
         print(command)
     subprocess.run(command)
     if verbose:
-        print('Number of rows after import: ', _get_row_count_in_database_table(fp_database,'epc_domestic_recommendations'))
+        print('Number of rows after import: ', _get_row_count_in_database_table(fp_database,'epc_domestic_recommendations','LMK_KEY'))
     
     
 def find_all_certificates_csv_files_in_folder(
@@ -305,14 +305,15 @@ def import_all_epc_domestic_csv_files_in_folder(
     
 def _get_row_count_in_database_table(
         fp_database,
-        table_name
+        table_name,
+        column_name='*'
         ):
     """Gets number of rows in table
     
     """
     with sqlite3.connect(fp_database) as conn:
         c = conn.cursor()
-        query=f'SELECT COUNT(*) FROM {table_name}'
+        query=f'SELECT COUNT({column_name}) FROM {table_name}'
         return c.execute(query).fetchone()[0]
     
 
