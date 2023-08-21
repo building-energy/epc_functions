@@ -12,7 +12,7 @@ import importlib.resources as pkg_resources
 import epc_functions
 import subprocess
 import urllib.request
-from csvw_functions import csvw_functions_extra
+from csvw_functions import csvw_functions, csvw_functions_extra
 import zipfile
 
 _default_data_folder='_data'  # the default
@@ -24,25 +24,7 @@ urllib.request.urlcleanup()
 
 #%% data folder
 
-# def _find_all_certificates_csv_files_in_folder(
-#         fp_folder
-#         ):
-#     """Finds all 'certificates.csv' files in the folder.
-    
-#     Searches the folder and all subfolders.
-    
-#     """
-#     result = []
-#     for root, dirnames, filenames in os.walk(fp_folder):
-#         if 'certificates.csv' in filenames:
-#             result.append(
-#                 os.path.join(
-#                     root,
-#                     'certificates.csv'
-#                     )
-#                 )
-#     return result
-        
+
 
 def _get_csv_files_in_zip(
         fp_zip
@@ -69,12 +51,27 @@ def _get_metadata_table_group_dict(
         "tables": []
         }
     
+    
+    metadata_schema_dict_certificates = \
+        csvw_functions.validate_schema_metadata(
+                'https://raw.githubusercontent.com/building-energy/epc_functions/main/epc_domestic_certificates-schema-metadata.json'
+                )
+    metadata_schema_dict_certificates.pop('@context')
+    #print(metadata_schema_dict_certificates)
+    
+    metadata_schema_dict_recommendations = \
+        csvw_functions.validate_schema_metadata(
+                'https://raw.githubusercontent.com/building-energy/epc_functions/main/epc_domestic_recommendations-schema-metadata.json'
+                )
+    metadata_schema_dict_recommendations.pop('@context')
+    #print(metadata_schema_dict_recommendations)
+    
     for csv_file in csv_files:
         
         basename=os.path.basename(csv_file)
-        print('basename', basename)
+        #print('basename', basename)
         dirname=os.path.dirname(csv_file)
-        print('dirname', dirname)
+        #print('dirname', dirname)
         
         if not basename in ['certificates.csv','recommendations.csv']:
             continue
@@ -83,7 +80,7 @@ def _get_metadata_table_group_dict(
         
         metadata_table_dict={
             "@type": "Table",
-            "url": "fp_zip",
+            "url": fp_zip,
             "https://purl.org/berg/csvw_functions/vocab/csv_file_name": csv_file_name,
             "https://purl.org/berg/csvw_functions/vocab/zip_filename": fp_zip, 
             "https://purl.org/berg/csvw_functions/vocab/csv_zip_extract_path": csv_file,
@@ -93,14 +90,23 @@ def _get_metadata_table_group_dict(
             
             metadata_table_dict.update({
                 "https://purl.org/berg/csvw_functions/vocab/sql_table_name":'domestic_certificates',
-                'tableSchema': 'https://raw.githubusercontent.com/building-energy/epc_functions/main/epc_domestic_certificates-schema-metadata.json'
+                'tableSchema': metadata_schema_dict_certificates
+                })
+            
+        elif basename=='recommendations.csv':
+            
+            metadata_table_dict.update({
+                "https://purl.org/berg/csvw_functions/vocab/sql_table_name":'domestic_recommendations',
+                'tableSchema': metadata_schema_dict_recommendations
                 })
         
-        
+        else:
+            
+            raise Exception
         
         metadata_table_group_dict['tables'].append(metadata_table_dict)
         
-        break
+        #break
     
 
     return metadata_table_group_dict
@@ -117,24 +123,29 @@ def set_data_folder(
         ):
     ""
     
+    # get all csv files in epc zip file
     csv_files = \
         _get_csv_files_in_zip(
             fp_zip
             )
     
+    # create new metadata table group object dynamically
     metadata_table_group_dict = \
         _get_metadata_table_group_dict(
             csv_files,
             fp_zip
             )
         
+    # save metadata table group object
     metadata_document_location=os.path.join(data_folder,'epc_tables-metadata.json')
         
     with open(metadata_document_location,'w') as f:
         json.dump(metadata_table_group_dict,f,indent=4)
         
+    #return
     
     # download all tables to data_folder
+    # note - this will overwrite the metadata file saved above with a normalized version
     fp_metadata=\
         csvw_functions_extra.download_table_group(
             metadata_document_location,
@@ -349,6 +360,25 @@ def import_epc_domestic_recommendations_csv_file(
         print('Number of rows after import: ', _get_row_count_in_database_table(fp_database,'epc_domestic_recommendations','LMK_KEY'))
     
     
+# def _find_all_certificates_csv_files_in_folder(
+#         fp_folder
+#         ):
+#     """Finds all 'certificates.csv' files in the folder.
+    
+#     Searches the folder and all subfolders.
+    
+#     """
+#     result = []
+#     for root, dirnames, filenames in os.walk(fp_folder):
+#         if 'certificates.csv' in filenames:
+#             result.append(
+#                 os.path.join(
+#                     root,
+#                     'certificates.csv'
+#                     )
+#                 )
+#     return result
+        
 
     
 def find_all_recommendations_csv_files_in_folder(

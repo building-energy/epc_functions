@@ -53,9 +53,13 @@ class TestDataFolder(unittest.TestCase):
     def test_set_data_folder(self):
         ""
         
+        fp_zip=r'C:\Users\cvskf\OneDrive - Loughborough University\_Data\Energy_Performance_Certificates\2023-08\all-domestic-certificates.zip'
         
         epc_functions.set_data_folder(
-            fp_zip=r'C:\Users\cvskf\OneDrive - Loughborough University\_Data\Energy_Performance_Certificates\2023-08\all-domestic-certificates.zip', 
+            fp_zip=fp_zip,
+            #overwrite_existing_files=True,
+            #remove_existing_tables=True,
+            verbose=True
             )
         
 
