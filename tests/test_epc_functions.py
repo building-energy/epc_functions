@@ -53,6 +53,11 @@ class TestDataFolder(unittest.TestCase):
     def test_set_data_folder(self):
         ""
         
+        
+        epc_functions.set_data_folder(
+            fp_zip=r'C:\Users\cvskf\OneDrive - Loughborough University\_Data\Energy_Performance_Certificates\2023-08\all-domestic-certificates.zip', 
+            )
+        
 
 
 class TestEPCFunctions(unittest.TestCase):
