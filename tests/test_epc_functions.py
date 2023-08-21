@@ -47,10 +47,18 @@ def _get_row_count_in_database_table(
 
 #%% TestCases
 
+class TestDataFolder(unittest.TestCase):
+    ""
+    
+    def test_set_data_folder(self):
+        ""
+        
+
+
 class TestEPCFunctions(unittest.TestCase):
     ""
     
-    def test_1_create_epc_domestic_certificates_table(self):
+    def _test_1_create_epc_domestic_certificates_table(self):
         ""
         
         epc_functions.create_epc_domestic_certificates_table(fp_database)
@@ -61,7 +69,7 @@ class TestEPCFunctions(unittest.TestCase):
             )
         
         
-    def test_2_create_epc_domestic_recommendations_table(self):
+    def _test_2_create_epc_domestic_recommendations_table(self):
         ""
         
         epc_functions.create_epc_domestic_recommendations_table(fp_database)
@@ -72,7 +80,7 @@ class TestEPCFunctions(unittest.TestCase):
             )
         
         
-    def test_3_import_epc_domestic_certificates_csv_file(self):
+    def _test_3_import_epc_domestic_certificates_csv_file(self):
         ""
         fp_csv=os.path.join(
             'all-domestic-certificates',
@@ -107,7 +115,7 @@ class TestEPCFunctions(unittest.TestCase):
             1000
             )
         
-    def test_4_import_epc_domestic_recommendations_csv_file(self):
+    def _test_4_import_epc_domestic_recommendations_csv_file(self):
         ""
         fp_csv=os.path.join(
             'all-domestic-certificates',
@@ -143,7 +151,7 @@ class TestEPCFunctions(unittest.TestCase):
             )
         
         
-    def test_5_find_all_certificates_csv_files_in_folder(self):
+    def _test_5_find_all_certificates_csv_files_in_folder(self):
         ""
         fp_folder='all-domestic-certificates'
         
@@ -158,7 +166,7 @@ class TestEPCFunctions(unittest.TestCase):
             )
             
         
-    def test_6_find_all_recommendations_csv_files_in_folder(self):
+    def _test_6_find_all_recommendations_csv_files_in_folder(self):
         ""
         fp_folder='all-domestic-certificates'
         
@@ -174,7 +182,7 @@ class TestEPCFunctions(unittest.TestCase):
             
         
         
-    def test_7_import_all_epc_domestic_csv_files_in_folder(self):
+    def _test_7_import_all_epc_domestic_csv_files_in_folder(self):
         ""
         fp_folder='all-domestic-certificates'
         

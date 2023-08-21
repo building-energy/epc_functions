@@ -6,13 +6,48 @@ Created on Thu Jul 27 14:42:31 2023
 """
 
 
-#%% import packages
+
 
 import sqlite3
 import csv, os, time, json
 import importlib.resources as pkg_resources
 import epc_functions
 import subprocess
+
+
+#%% data folder
+
+def set_data_folder(
+        metadata_document_location=r'https://raw.githubusercontent.com/building-energy/ogp_functions/main/ogp_tables-metadata.json', 
+        data_folder=_default_data_folder,
+        overwrite_existing_files=False,
+        database_name=_default_database_name,
+        remove_existing_tables=False,
+        verbose=False
+        ):
+    ""
+    
+    # download all tables to data_folder
+    fp_metadata=\
+        csvw_functions_extra.download_table_group(
+            metadata_document_location,
+            data_folder=data_folder,
+            overwrite_existing_files=overwrite_existing_files,
+            verbose=verbose
+            )
+
+    #return
+        
+    # import all tables to sqlite
+    csvw_functions_extra.import_table_group_to_sqlite(
+        metadata_document_location=fp_metadata,
+        data_folder=data_folder,
+        database_name=database_name,
+        remove_existing_tables=remove_existing_tables,
+        verbose=verbose
+        )
+
+
 
 
 

@@ -1,0 +1,7 @@
+{
+    "$schema":"https://raw.githubusercontent.com/stevenkfirth/csvw_metadata_json_schema/main/schema_files/table_group_description.schema.json",
+    "@context": "http://www.w3.org/ns/csvw",
+    "@type": "TableGroup",
+    "tables": [
+    ]
+}
