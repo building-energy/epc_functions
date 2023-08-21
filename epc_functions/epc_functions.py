@@ -154,7 +154,7 @@ def set_data_folder(
             verbose=verbose
             )
 
-    return
+    #return
         
     # import all tables to sqlite
     csvw_functions_extra.import_table_group_to_sqlite(

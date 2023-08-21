@@ -18,33 +18,6 @@ import os
 fp_database='epc_test.sqlite'
 
 
-#%% set up utility functions
-
-def _list_tables_in_database(
-        fp_database
-        ):
-    """
-    
-    """
-    with sqlite3.connect(fp_database) as conn:
-        c = conn.cursor()
-        query="SELECT name FROM sqlite_schema WHERE type ='table' AND name NOT LIKE 'sqlite_%';"
-        return [x[0] for x in c.execute(query).fetchall()]
-    
-    
-def _get_row_count_in_database_table(
-        fp_database,
-        table_name
-        ):
-    """Gets number of rows in table
-    
-    """
-    with sqlite3.connect(fp_database) as conn:
-        c = conn.cursor()
-        query=f'SELECT COUNT(*) FROM {table_name}'
-        return c.execute(query).fetchone()[0]
-
-
 #%% TestCases
 
 class TestDataFolder(unittest.TestCase):
@@ -217,6 +190,33 @@ class TestEPCFunctions(unittest.TestCase):
             1000
             )
         
+        
+
+#%% set up utility functions
+
+def _list_tables_in_database(
+        fp_database
+        ):
+    """
+    
+    """
+    with sqlite3.connect(fp_database) as conn:
+        c = conn.cursor()
+        query="SELECT name FROM sqlite_schema WHERE type ='table' AND name NOT LIKE 'sqlite_%';"
+        return [x[0] for x in c.execute(query).fetchall()]
+    
+    
+def _get_row_count_in_database_table(
+        fp_database,
+        table_name
+        ):
+    """Gets number of rows in table
+    
+    """
+    with sqlite3.connect(fp_database) as conn:
+        c = conn.cursor()
+        query=f'SELECT COUNT(*) FROM {table_name}'
+        return c.execute(query).fetchone()[0]
         
         
 #%% run unittests
