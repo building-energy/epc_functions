@@ -63,8 +63,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 8",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#POSTCODE",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "BUILDING_REFERENCE_NUMBER",
@@ -76,8 +75,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 12",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#BUILDING_REFERENCE_NUMBER",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "CURRENT_ENERGY_RATING",
@@ -90,8 +88,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 8",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#CURRENT_ENERGY_RATING",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "POTENTIAL_ENERGY_RATING",
@@ -104,8 +101,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 8",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#POTENTIAL_ENERGY_RATING",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "CURRENT_ENERGY_EFFICIENCY",
@@ -146,8 +142,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 10",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#PROPERTY_TYPE",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "BUILT_FORM",
@@ -160,8 +155,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 20",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#BUILT_FORM",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "INSPECTION_DATE",
@@ -174,8 +168,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "DATE",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#INSPECTION_DATE",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "LOCAL_AUTHORITY",
@@ -188,8 +181,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 9",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#LOCAL_AUTHORITY",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "CONSTITUENCY",
@@ -201,8 +193,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 9",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#CONSTITUENCY",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "COUNTY",
@@ -214,8 +205,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 24",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#COUNTY",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "LODGEMENT_DATE",
@@ -228,8 +218,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "DATE",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#LODGEMENT_DATE",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "TRANSACTION_TYPE",
@@ -242,8 +231,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 82",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#TRANSACTION_TYPE",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "ENVIRONMENT_IMPACT_CURRENT",
@@ -449,8 +437,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 16",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#ENERGY_TARIFF",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "MAINS_GAS_FLAG",
@@ -463,8 +450,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 1",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#MAINS_GAS_FLAG",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "FLOOR_LEVEL",
@@ -477,8 +463,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 13",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#FLOOR_LEVEL",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "FLAT_TOP_STOREY",
@@ -491,8 +476,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 1",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#FLAT_TOP_STOREY",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "FLAT_STOREY_COUNT",
@@ -518,8 +502,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 19",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#MAIN_HEATING_CONTROLS",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "MULTI_GLAZE_PROPORTION",
@@ -547,8 +530,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 45",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#GLAZED_TYPE",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "GLAZED_AREA",
@@ -561,8 +543,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 22",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#GLAZED_AREA",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "EXTENSION_COUNT",
@@ -654,8 +635,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 9",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#HOT_WATER_ENERGY_EFF",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "HOT_WATER_ENV_EFF",
@@ -668,8 +648,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 9",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#HOT_WATER_ENV_EFF",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "FLOOR_DESCRIPTION",
@@ -694,8 +673,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 9",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#FLOOR_ENERGY_EFF",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "FLOOR_ENV_EFF",
@@ -708,8 +686,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 9",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#FLOOR_ENV_EFF",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "WINDOWS_DESCRIPTION",
@@ -734,8 +711,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 9",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#WINDOWS_ENERGY_EFF",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "WINDOWS_ENV_EFF",
@@ -748,8 +724,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 9",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#WINDOWS_ENV_EFF",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "WALLS_DESCRIPTION",
@@ -774,8 +749,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 9",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#WALLS_ENERGY_EFF",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "WALLS_ENV_EFF",
@@ -788,8 +762,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 9",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#WALLS_ENV_EFF",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "SECONDHEAT_DESCRIPTION",
@@ -814,8 +787,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 3",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#SHEATING_ENERGY_EFF",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "SHEATING_ENV_EFF",
@@ -828,8 +800,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 3",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#SHEATING_ENV_EFF",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "ROOF_DESCRIPTION",
@@ -854,8 +825,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 9",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#ROOF_ENERGY_EFF",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "ROOF_ENV_EFF",
@@ -868,8 +838,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 9",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#ROOF_ENV_EFF",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "MAINHEAT_DESCRIPTION",
@@ -894,8 +863,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 9",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#MAINHEAT_ENERGY_EFF",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "MAINHEAT_ENV_EFF",
@@ -908,8 +876,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 9",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#MAINHEAT_ENV_EFF",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "MAINHEATCONT_DESCRIPTION",
@@ -934,8 +901,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 9",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#MAINHEATC_ENERGY_EFF",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "MAINHEATC_ENV_EFF",
@@ -948,8 +914,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 9",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#MAINHEATC_ENV_EFF",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "LIGHTING_DESCRIPTION",
@@ -974,8 +939,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 9",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#LIGHTING_ENERGY_EFF",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "LIGHTING_ENV_EFF",
@@ -988,8 +952,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 9",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#LIGHTING_ENV_EFF",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "MAIN_FUEL",
@@ -1002,8 +965,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 93",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#MAIN_FUEL",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "WIND_TURBINE_COUNT",
@@ -1029,8 +991,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 17",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#HEAT_LOSS_CORRIDOR",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "UNHEATED_CORRIDOR_LENGTH",
@@ -1086,8 +1047,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 1",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#SOLAR_WATER_HEATING_FLAG",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "MECHANICAL_VENTILATION",
@@ -1100,8 +1060,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 30",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#MECHANICAL_VENTILATION",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "ADDRESS",
@@ -1125,8 +1084,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#LOCAL_AUTHORITY_LABEL",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "CONSTITUENCY_LABEL",
@@ -1138,8 +1096,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#CONSTITUENCY_LABEL",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "POSTTOWN",
@@ -1151,8 +1108,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 37",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#POSTTOWN",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "CONSTRUCTION_AGE_BAND",
@@ -1165,8 +1121,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 31",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#CONSTRUCTION_AGE_BAND",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "LODGEMENT_DATETIME",
@@ -1179,8 +1134,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "DATETIME2",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#LODGEMENT_DATETIME",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "TENURE",
@@ -1193,8 +1147,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 100",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#TENURE",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         },
         {
             "name": "FIXED_LIGHTING_OUTLETS_COUNT",
@@ -1244,8 +1197,7 @@
             },
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 15",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#UPRN_SOURCE",
-            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}"
         }
     ]
 }

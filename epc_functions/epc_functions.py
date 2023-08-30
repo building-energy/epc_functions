@@ -14,9 +14,12 @@ import subprocess
 import urllib.request
 from csvw_functions import csvw_functions, csvw_functions_extra
 import zipfile
+import datetime
+import csv
 
 _default_data_folder='_data'  # the default
 _default_database_name='epc_data.sqlite'
+_default_fp_zip=os.path.join(_default_data_folder,'all-domestic-certificates.zip')
 
 urllib.request.urlcleanup()
 
@@ -25,13 +28,59 @@ urllib.request.urlcleanup()
 #%% data folder
 
 
+def _filter_csv_file(
+        fp,
+        fp_out,
+        start_date,
+        end_date,
+        var='INSPECTION_DATE'
+        ):
+    ""
+    
+    start_date=datetime.date.fromisoformat(start_date)
+    #print(start_date)
+    end_date=datetime.date.fromisoformat(end_date)
+    #print(end_date)
+    
+    with open(fp) as f:
+        
+        csvreader=csv.reader(f)
+        
+        with open(fp_out,'w',newline='') as f1:
+            
+            csvwriter=csv.writer(f1)
+            
+            headers=next(csvreader)
+            #print(headers)
+            
+            csvwriter.writerow(headers)
+            
+            i=headers.index(var)
+            #print(i)
+            
+            for row in csvreader:
+                
+                var_date=datetime.date.fromisoformat(row[i])
+                #print(var_date)
+                
+                if var_date >= start_date and var_date <= end_date:
+                    
+                    #print(var_date)
+                    
+                    csvwriter.writerow(row)
+                    
+                #break
+
+        
+
+
 
 def _get_csv_files_in_zip(
         fp_zip
         ):
     ""
     z = zipfile.ZipFile(fp_zip)
-    
+        
     result=z.namelist()
     
     result=[x for x in result if os.path.splitext(x)[1]=='.csv']
@@ -114,7 +163,7 @@ def _get_metadata_table_group_dict(
     
 
 def set_data_folder(
-        fp_zip,
+        fp_zip=_default_fp_zip,
         data_folder=_default_data_folder,
         overwrite_existing_files=False,
         database_name=_default_database_name,
@@ -166,6 +215,349 @@ def set_data_folder(
         )
 
 
+#%% main functions
+
+def _convert_to_iterator(
+        x
+        ):
+    ""
+    if x is None:
+        return []
+    elif isinstance(x,str):
+        return [x]
+    else:
+        try:
+            _ = iter(x)
+            return x
+        except TypeError:
+            return [x]
+            
+
+def _get_field_string(
+        fields
+        ):
+    ""
+    if fields is None or fields=='':
+        fields_string='*'
+    else:
+        fields=_convert_to_iterator(fields)
+        fields_string='","'.join(fields)
+        fields_string=f' "{fields_string}" '
+    
+    return fields_string
+
+
+def _get_group_by_string(
+        group_by
+        ):
+    ""
+    if group_by is None:
+        groups=[]
+    else:
+        groups=_convert_to_iterator(group_by)
+    
+    if len(groups)==0:
+        group_by_fields=''
+        group_by_string=''
+    else:
+        x='","'.join(group_by)
+        group_by_fields=f' "{x}", '
+        group_by_string=f'GROUP BY "{x}" '
+        
+    return group_by_fields, group_by_string
+
+
+def _get_where_string(
+        filter_by  # a dict
+        ):
+    ""
+    if filter_by is None:
+        
+        filter_by=dict()
+    
+    where=[]
+    
+    for field_name,filter_value in filter_by.items():
+        
+        if isinstance(filter_value,dict):
+            
+            if len(filter_value)>1:
+                raise Exception  # only a single filter keyword to be passed
+                
+            x=list(filter_value)[0]
+            y=filter_value[x]
+            
+            if x=='BETWEEN':
+                
+                if not len(y)==2:
+                    
+                    raise Exception
+                    
+                else:
+                    
+                    filter_operator='BETWEEN'
+                    filter_string=f'"{y[0]}" AND "{y[1]}"'
+                        
+            else:
+                
+                raise NotImplementedError
+            
+        else:
+        
+            filter_value=_convert_to_iterator(filter_value)
+            if len(filter_value)==1:
+                filter_string=filter_value[0]
+                filter_string=f'"{filter_string}"'
+                filter_operator='='
+            else:
+                filter_string='","'.join(filter_value)
+                filter_string=f'("{filter_string}")'
+                filter_operator='IN'
+            
+        where.append(f'("{field_name}" {filter_operator} {filter_string})')
+    
+    if len(where)==0:
+        where_string=''
+    else:
+        x=' AND '.join(where)
+        where_string=f' WHERE {x}'
+
+    return where_string
+
+
+def get_domestic_certificates(
+        filter_by=None,  # a dict
+        fields=None,  # or a list of field names
+        data_folder=_default_data_folder,
+        database_name=_default_database_name,
+        verbose=False
+        ):
+    ""
+    return get_rows(
+            table_name='domestic_certificates',
+            filter_by=filter_by,  # a dict
+            fields=fields,  # or a list of field names
+            data_folder=data_folder,
+            database_name=database_name,
+            verbose=verbose
+            )
+
+
+def get_domestic_certificates_count(
+        filter_by=None,
+        group_by=None,
+        data_folder=_default_data_folder,
+        database_name=_default_database_name,
+        verbose=False
+        ):
+    ""
+    return get_row_count(
+            table_name='domestic_certificates',
+            filter_by=filter_by,
+            group_by=group_by,
+            data_folder=data_folder,
+            database_name=database_name,
+            verbose=verbose
+            )
+
+
+def get_domestic_certificates_field_names(
+        data_folder=_default_data_folder,
+        database_name=_default_database_name,
+        verbose=False
+        ):
+    ""
+    return get_field_names(
+            table_name='domestic_certificates',
+            data_folder=data_folder,
+            database_name=database_name,
+            verbose=verbose
+            )
+
+
+def get_domestic_recommendations(
+        filter_by=None,  # a dict
+        fields=None,  # or a list of field names
+        data_folder=_default_data_folder,
+        database_name=_default_database_name,
+        verbose=False
+        ):
+    ""
+    return get_rows(
+            table_name='domestic_recommendations',
+            filter_by=filter_by,  # a dict
+            fields=fields,  # or a list of field names
+            data_folder=data_folder,
+            database_name=database_name,
+            verbose=False
+            )
+
+
+def get_domestic_recommendations_count(
+        filter_by=None,
+        group_by=None,
+        data_folder=_default_data_folder,
+        database_name=_default_database_name,
+        verbose=False
+        ):
+    ""
+    return get_row_count(
+            table_name='domestic_recommendations',
+            filter_by=filter_by,
+            group_by=group_by,
+            data_folder=data_folder,
+            database_name=database_name,
+            verbose=verbose
+            )
+
+
+def get_domestic_recommendations_field_names(
+        data_folder=_default_data_folder,
+        database_name=_default_database_name
+        ):
+    ""
+    return get_field_names(
+            table_name='domestic_recommendations',
+            data_folder=_default_data_folder,
+            database_name=_default_database_name
+            )
+
+
+
+def get_field_names(
+        table_name,
+        data_folder=_default_data_folder,
+        database_name=_default_database_name,
+        verbose=False
+        ):
+    ""
+    fp_database=os.path.join(data_folder,database_name)
+    
+    if verbose:
+        print('fp_database:',fp_database)
+        
+        
+    query=f'PRAGMA table_info({table_name});'
+    if verbose:
+        print(query)
+        
+    with sqlite3.connect(fp_database) as conn:
+        c = conn.cursor()
+        
+        return [x[1] for x in c.execute(query).fetchall()]
+    
+
+def get_row_count(
+        table_name,
+        filter_by=None,
+        group_by=None,
+        data_folder=_default_data_folder,
+        database_name=_default_database_name,
+        verbose=False
+        ):
+    ""
+    fp_database=os.path.join(data_folder,database_name)
+    if verbose:
+        print('fp_database:',fp_database)
+    
+    where_string=\
+        _get_where_string(
+            filter_by
+            )
+        
+    group_by_fields, group_by_string=\
+        _get_group_by_string(
+            group_by
+            )
+        
+    query=f"""
+        SELECT 
+            {group_by_fields} COUNT(*) AS COUNT
+        FROM 
+            {table_name} 
+        {where_string}
+        {group_by_string}
+        """
+        
+    if verbose:
+        print(query)
+            
+    with sqlite3.connect(fp_database) as conn:
+        conn.row_factory = sqlite3.Row
+        c = conn.cursor()
+        result=[dict(x) for x in c.execute(query).fetchall()]
+        
+    return result
+
+
+def get_rows(
+        table_name,
+        filter_by,  # a dict
+        fields=None,  # or a list of field names
+        data_folder=_default_data_folder,
+        database_name=_default_database_name,
+        verbose=False
+        ):
+    ""
+    fp_database=os.path.join(data_folder,database_name)
+    
+    field_string=\
+        _get_field_string(
+            fields
+            )
+    
+    where_string=\
+        _get_where_string(
+            filter_by
+            )
+        
+    query=f"""
+        SELECT 
+            {field_string}
+        FROM 
+            {table_name} 
+            {where_string}
+        """
+        
+    if verbose:
+        print(query)
+            
+    with sqlite3.connect(fp_database) as conn:
+        conn.row_factory = sqlite3.Row
+        c = conn.cursor()
+        result=[dict(x) for x in c.execute(query).fetchall()]
+        
+    return result
+
+
+def get_table_names(
+        data_folder=_default_data_folder,
+        database_name=_default_database_name
+        ):
+    ""
+    fp_database=os.path.join(data_folder,database_name)
+    with sqlite3.connect(fp_database) as conn:
+        c = conn.cursor()
+        query="SELECT * FROM sqlite_master WHERE type='table';"
+        return [x[1] for x in c.execute(query).fetchall()]
+    
+    
+
+    
+
+
+
+
+
+# def get_list_of_dates(
+#         start_date,  # i.e. 2021-01-01  %Y-%m-%d
+#         number_of_days
+#         ):
+#     ""
+#     start=datetime.datetime.strptime(start_date, '%Y-%m-%d')
+#     return [(start + datetime.timedelta(days=x)).strftime('%Y-%m-%d') 
+#             for x in range(number_of_days)]
+    
 
 
 
@@ -192,293 +584,278 @@ def set_data_folder(
 # #print(epc_domestic_recommendations_schema_metadata)
 
 
-#%% database functions
+# #%% database functions
 
-def create_epc_domestic_certificates_table(
-        fp_database,
-        verbose=True
-        ):
-    """Creates a new epc domestic certificates table in the sqlite database.
+# def create_epc_domestic_certificates_table(
+#         fp_database,
+#         verbose=True
+#         ):
+#     """Creates a new epc domestic certificates table in the sqlite database.
     
-    No action if table already exists.
+#     No action if table already exists.
     
-    """
+#     """
     
-    if _check_if_table_exists_in_database(
-            fp_database,
-            'epc_domestic_certificates'
-            ):
-        if verbose:
-            print('---CREATE TABLE---')
-            print('Table "epc_domestic_certificates" already exists in database - no action')
-        return
+#     if _check_if_table_exists_in_database(
+#             fp_database,
+#             'epc_domestic_certificates'
+#             ):
+#         if verbose:
+#             print('---CREATE TABLE---')
+#             print('Table "epc_domestic_certificates" already exists in database - no action')
+#         return
     
     
-    # create query
-    datatype_map={
-    'integer':'INTEGER',
-    'decimal':'REAL'
-    }
-    query='CREATE TABLE epc_domestic_certificates ('
+#     # create query
+#     datatype_map={
+#     'integer':'INTEGER',
+#     'decimal':'REAL'
+#     }
+#     query='CREATE TABLE epc_domestic_certificates ('
     
-    for column_dict in epc_domestic_certificates_schema_metadata['columns']:
-        name=column_dict['name']
-        datatype=datatype_map.get(column_dict['datatype']['base'],'TEXT')
-        query+=f"{name} {datatype}"
-        query+=", "
-    query=query[:-2]
+#     for column_dict in epc_domestic_certificates_schema_metadata['columns']:
+#         name=column_dict['name']
+#         datatype=datatype_map.get(column_dict['datatype']['base'],'TEXT')
+#         query+=f"{name} {datatype}"
+#         query+=", "
+#     query=query[:-2]
         
-    if 'primaryKey' in epc_domestic_certificates_schema_metadata:
+#     if 'primaryKey' in epc_domestic_certificates_schema_metadata:
         
-        pk=epc_domestic_certificates_schema_metadata['primaryKey']
-        if isinstance(pk,str):
-            pk=[pk]
-        query+=', PRIMARY KEY ('
-        for x in pk:
-            query+=x
-            query+=", "
-        query=query[:-2]
-        query+=') '
+#         pk=epc_domestic_certificates_schema_metadata['primaryKey']
+#         if isinstance(pk,str):
+#             pk=[pk]
+#         query+=', PRIMARY KEY ('
+#         for x in pk:
+#             query+=x
+#             query+=", "
+#         query=query[:-2]
+#         query+=') '
         
-    query+=');'
+#     query+=');'
     
-    if verbose:
-        print('---QUERY TO CREATE TABLE---')
-        print(query)
+#     if verbose:
+#         print('---QUERY TO CREATE TABLE---')
+#         print(query)
     
-    # create table in database
-    with sqlite3.connect(fp_database) as conn:
-        c = conn.cursor()
+#     # create table in database
+#     with sqlite3.connect(fp_database) as conn:
+#         c = conn.cursor()
         
-        # create table
-        c.execute(query)
-        conn.commit()
+#         # create table
+#         c.execute(query)
+#         conn.commit()
         
         
     
-def create_epc_domestic_recommendations_table(
-        fp_database,
-        verbose=True
-        ):
-    """Creates a new epc domestic recommendations table in the sqlite database.
+# def create_epc_domestic_recommendations_table(
+#         fp_database,
+#         verbose=True
+#         ):
+#     """Creates a new epc domestic recommendations table in the sqlite database.
     
-    No action if table already exists.
+#     No action if table already exists.
     
-    """
-    if _check_if_table_exists_in_database(
-            fp_database,
-            'epc_domestic_recommendations'
-            ):
-        if verbose:
-            print('---CREATE TABLE---')
-            print('Table "epc_domestic_recommendations" already exists in database - no action')
-        return
+#     """
+#     if _check_if_table_exists_in_database(
+#             fp_database,
+#             'epc_domestic_recommendations'
+#             ):
+#         if verbose:
+#             print('---CREATE TABLE---')
+#             print('Table "epc_domestic_recommendations" already exists in database - no action')
+#         return
     
     
-    datatype_map={
-    'integer':'INTEGER',
-    'decimal':'REAL'
-    }
-    query='CREATE TABLE epc_domestic_recommendations ('
-    for column_dict in epc_domestic_recommendations_schema_metadata['columns']:
-        name=column_dict['name']
-        datatype=datatype_map.get(column_dict['datatype']['base'],'TEXT')
-        query+=f"{name} {datatype}"
-        query+=", "
-    query=query[:-2]
+#     datatype_map={
+#     'integer':'INTEGER',
+#     'decimal':'REAL'
+#     }
+#     query='CREATE TABLE epc_domestic_recommendations ('
+#     for column_dict in epc_domestic_recommendations_schema_metadata['columns']:
+#         name=column_dict['name']
+#         datatype=datatype_map.get(column_dict['datatype']['base'],'TEXT')
+#         query+=f"{name} {datatype}"
+#         query+=", "
+#     query=query[:-2]
         
-    if 'primaryKey' in epc_domestic_recommendations_schema_metadata:
+#     if 'primaryKey' in epc_domestic_recommendations_schema_metadata:
         
-        pk=epc_domestic_recommendations_schema_metadata['primaryKey']
-        if isinstance(pk,str):
-            pk=[pk]
-        query+=', PRIMARY KEY ('
-        for x in pk:
-            query+=x
-            query+=", "
-        query=query[:-2]
-        query+=') '
+#         pk=epc_domestic_recommendations_schema_metadata['primaryKey']
+#         if isinstance(pk,str):
+#             pk=[pk]
+#         query+=', PRIMARY KEY ('
+#         for x in pk:
+#             query+=x
+#             query+=", "
+#         query=query[:-2]
+#         query+=') '
         
-    query+=');'
+#     query+=');'
     
-    if verbose:
-        print('---QUERY TO CREATE TABLE---')
-        print(query)
+#     if verbose:
+#         print('---QUERY TO CREATE TABLE---')
+#         print(query)
     
-    # create table in database
-    with sqlite3.connect(fp_database) as conn:
-        c = conn.cursor()
+#     # create table in database
+#     with sqlite3.connect(fp_database) as conn:
+#         c = conn.cursor()
         
-        # delete table if already exists
-        c.execute("DROP TABLE IF EXISTS epc_domestic_recommendations;")
-        conn.commit()
+#         # delete table if already exists
+#         c.execute("DROP TABLE IF EXISTS epc_domestic_recommendations;")
+#         conn.commit()
     
-        # create table
-        c.execute(query)
-        conn.commit()
+#         # create table
+#         c.execute(query)
+#         conn.commit()
         
-        # list tables in database
-        query="SELECT name FROM sqlite_schema WHERE type ='table' AND name NOT LIKE 'sqlite_%';"
-        #print([x[0] for x in c.execute(query).fetchall()])
+#         # list tables in database
+#         query="SELECT name FROM sqlite_schema WHERE type ='table' AND name NOT LIKE 'sqlite_%';"
+#         #print([x[0] for x in c.execute(query).fetchall()])
     
 
-def import_epc_domestic_certificates_csv_file(
-        fp_database,
-        fp_csv,
-        verbose=True
-        ):
-    """
-    """
-    fp_database=fp_database.replace('\\','\\\\')
-    fp_csv=fp_csv.replace('\\','\\\\')
-    command=f'sqlite3 {fp_database} -cmd ".mode csv" ".import --skip 1 {fp_csv} epc_domestic_certificates"'
-    if verbose:
-        print('---COMMAND LINE TO IMPORT DATA---')
-        print('Number of rows before import:', _get_row_count_in_database_table(fp_database,'epc_domestic_certificates','LMK_KEY'))
-        print(command)
-    subprocess.run(command)
-    if verbose:
-        print('Number of rows after import: ', _get_row_count_in_database_table(fp_database,'epc_domestic_certificates','LMK_KEY'))
+# def import_epc_domestic_certificates_csv_file(
+#         fp_database,
+#         fp_csv,
+#         verbose=True
+#         ):
+#     """
+#     """
+#     fp_database=fp_database.replace('\\','\\\\')
+#     fp_csv=fp_csv.replace('\\','\\\\')
+#     command=f'sqlite3 {fp_database} -cmd ".mode csv" ".import --skip 1 {fp_csv} epc_domestic_certificates"'
+#     if verbose:
+#         print('---COMMAND LINE TO IMPORT DATA---')
+#         print('Number of rows before import:', _get_row_count_in_database_table(fp_database,'epc_domestic_certificates','LMK_KEY'))
+#         print(command)
+#     subprocess.run(command)
+#     if verbose:
+#         print('Number of rows after import: ', _get_row_count_in_database_table(fp_database,'epc_domestic_certificates','LMK_KEY'))
     
     
-def import_epc_domestic_recommendations_csv_file(
-        fp_database,
-        fp_csv,
-        verbose=True
-        ):
-    """
-    """
-    fp_database=fp_database.replace('\\','\\\\')
-    fp_csv=fp_csv.replace('\\','\\\\')
-    command=f'sqlite3 {fp_database} -cmd ".mode csv" ".import --skip 1 {fp_csv} epc_domestic_recommendations"'
-    if verbose:
-        print('---COMMAND LINE TO IMPORT DATA---')
-        print('Number of rows before import:', _get_row_count_in_database_table(fp_database,'epc_domestic_recommendations','LMK_KEY'))
-        print(command)
-    subprocess.run(command)
-    if verbose:
-        print('Number of rows after import: ', _get_row_count_in_database_table(fp_database,'epc_domestic_recommendations','LMK_KEY'))
+# def import_epc_domestic_recommendations_csv_file(
+#         fp_database,
+#         fp_csv,
+#         verbose=True
+#         ):
+#     """
+#     """
+#     fp_database=fp_database.replace('\\','\\\\')
+#     fp_csv=fp_csv.replace('\\','\\\\')
+#     command=f'sqlite3 {fp_database} -cmd ".mode csv" ".import --skip 1 {fp_csv} epc_domestic_recommendations"'
+#     if verbose:
+#         print('---COMMAND LINE TO IMPORT DATA---')
+#         print('Number of rows before import:', _get_row_count_in_database_table(fp_database,'epc_domestic_recommendations','LMK_KEY'))
+#         print(command)
+#     subprocess.run(command)
+#     if verbose:
+#         print('Number of rows after import: ', _get_row_count_in_database_table(fp_database,'epc_domestic_recommendations','LMK_KEY'))
     
     
-# def _find_all_certificates_csv_files_in_folder(
+# # def _find_all_certificates_csv_files_in_folder(
+# #         fp_folder
+# #         ):
+# #     """Finds all 'certificates.csv' files in the folder.
+    
+# #     Searches the folder and all subfolders.
+    
+# #     """
+# #     result = []
+# #     for root, dirnames, filenames in os.walk(fp_folder):
+# #         if 'certificates.csv' in filenames:
+# #             result.append(
+# #                 os.path.join(
+# #                     root,
+# #                     'certificates.csv'
+# #                     )
+# #                 )
+# #     return result
+        
+
+    
+# def find_all_recommendations_csv_files_in_folder(
 #         fp_folder
 #         ):
-#     """Finds all 'certificates.csv' files in the folder.
+#     """Finds all 'recommendations.csv' files in the folder.
     
 #     Searches the folder and all subfolders.
     
 #     """
 #     result = []
 #     for root, dirnames, filenames in os.walk(fp_folder):
-#         if 'certificates.csv' in filenames:
+#         if 'recommendations.csv' in filenames:
 #             result.append(
 #                 os.path.join(
 #                     root,
-#                     'certificates.csv'
+#                     'recommendations.csv'
 #                     )
 #                 )
 #     return result
+    
+
+# def import_all_epc_domestic_csv_files_in_folder(
+#         fp_database,
+#         fp_folder,
+#         verbose=True
+#         ):
+#     """
+    
+#     Imports 'certificates.csv' and 'recommendations.csv' files.
+    
+#     """
+    
+#     # --- certificates ---
+    
+#     # create certificates table if needed
+#     create_epc_domestic_certificates_table(
+#         fp_database,
+#         verbose=verbose
+#         )
+    
+#     # import all certificates files into database
+#     for fp_csv in find_all_certificates_csv_files_in_folder(
+#             fp_folder
+#             ):
         
-
-    
-def find_all_recommendations_csv_files_in_folder(
-        fp_folder
-        ):
-    """Finds all 'recommendations.csv' files in the folder.
-    
-    Searches the folder and all subfolders.
-    
-    """
-    result = []
-    for root, dirnames, filenames in os.walk(fp_folder):
-        if 'recommendations.csv' in filenames:
-            result.append(
-                os.path.join(
-                    root,
-                    'recommendations.csv'
-                    )
-                )
-    return result
-    
-
-def import_all_epc_domestic_csv_files_in_folder(
-        fp_database,
-        fp_folder,
-        verbose=True
-        ):
-    """
-    
-    Imports 'certificates.csv' and 'recommendations.csv' files.
-    
-    """
-    
-    # --- certificates ---
-    
-    # create certificates table if needed
-    create_epc_domestic_certificates_table(
-        fp_database,
-        verbose=verbose
-        )
-    
-    # import all certificates files into database
-    for fp_csv in find_all_certificates_csv_files_in_folder(
-            fp_folder
-            ):
+#         import_epc_domestic_certificates_csv_file(
+#             fp_database,
+#             fp_csv,
+#             verbose=verbose            
+#             )
         
-        import_epc_domestic_certificates_csv_file(
-            fp_database,
-            fp_csv,
-            verbose=verbose            
-            )
+#     # --- recommendations ---
+#     # create recommendations table if needed
+#     create_epc_domestic_recommendations_table(
+#         fp_database,
+#         verbose=verbose
+#         )
+    
+#     # import all recommendations files into database
+#     for fp_csv in find_all_recommendations_csv_files_in_folder(
+#             fp_folder
+#             ):
         
-    # --- recommendations ---
-    # create recommendations table if needed
-    create_epc_domestic_recommendations_table(
-        fp_database,
-        verbose=verbose
-        )
-    
-    # import all recommendations files into database
-    for fp_csv in find_all_recommendations_csv_files_in_folder(
-            fp_folder
-            ):
-        
-        import_epc_domestic_recommendations_csv_file(
-            fp_database,
-            fp_csv,
-            verbose=verbose            
-            )
+#         import_epc_domestic_recommendations_csv_file(
+#             fp_database,
+#             fp_csv,
+#             verbose=verbose            
+#             )
     
     
     
     
 
-
     
-    
-def _get_row_count_in_database_table(
-        fp_database,
-        table_name,
-        column_name='*'
-        ):
-    """Gets number of rows in table
-    
-    """
-    with sqlite3.connect(fp_database) as conn:
-        c = conn.cursor()
-        query=f'SELECT COUNT({column_name}) FROM {table_name}'
-        return c.execute(query).fetchone()[0]
+# def _check_if_table_exists_in_database(
+#         fp_database,
+#         table_name
+#         ):
+#     ""
+#     with sqlite3.connect(fp_database) as conn:
+#         c = conn.cursor()
+#         query=f"SELECT count(*) FROM sqlite_master WHERE type='table' AND name='{table_name}';"
+#         return True if c.execute(query).fetchall()[0][0] else False
     
 
-def _check_if_table_exists_in_database(
-        fp_database,
-        table_name
-        ):
-    ""
-    with sqlite3.connect(fp_database) as conn:
-        c = conn.cursor()
-        query=f"SELECT count(*) FROM sqlite_master WHERE type='table' AND name='{table_name}';"
-        return True if c.execute(query).fetchall()[0][0] else False
-    
     
     
