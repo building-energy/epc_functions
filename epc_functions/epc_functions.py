@@ -460,329 +460,132 @@ def get_epc_table_names_in_database(
 
 #%% main functions
 
-def _convert_to_iterator(
-        x
-        ):
-    ""
-    if x is None:
-        return []
-    elif isinstance(x,str):
-        return [x]
-    else:
-        try:
-            _ = iter(x)
-            return x
-        except TypeError:
-            return [x]
-            
-
-def _get_field_string(
-        fields
-        ):
-    ""
-    if fields is None or fields=='':
-        fields_string='*'
-    else:
-        fields=_convert_to_iterator(fields)
-        fields_string='","'.join(fields)
-        fields_string=f' "{fields_string}" '
-    
-    return fields_string
-
-
-def _get_group_by_string(
-        group_by
-        ):
-    ""
-    if group_by is None:
-        groups=[]
-    else:
-        groups=_convert_to_iterator(group_by)
-    
-    if len(groups)==0:
-        group_by_fields=''
-        group_by_string=''
-    else:
-        x='","'.join(group_by)
-        group_by_fields=f' "{x}", '
-        group_by_string=f'GROUP BY "{x}" '
-        
-    return group_by_fields, group_by_string
-
-
-def _get_where_string(
-        filter_by  # a dict
-        ):
-    ""
-    if filter_by is None:
-        
-        filter_by=dict()
-    
-    where=[]
-    
-    for field_name,filter_value in filter_by.items():
-        
-        if isinstance(filter_value,dict):
-            
-            if len(filter_value)>1:
-                raise Exception  # only a single filter keyword to be passed
-                
-            x=list(filter_value)[0]
-            y=filter_value[x]
-            
-            if x=='BETWEEN':
-                
-                if not len(y)==2:
-                    
-                    raise Exception
-                    
-                else:
-                    
-                    filter_operator='BETWEEN'
-                    filter_string=f'"{y[0]}" AND "{y[1]}"'
-                        
-            else:
-                
-                raise NotImplementedError
-            
-        else:
-        
-            filter_value=_convert_to_iterator(filter_value)
-            if len(filter_value)==1:
-                filter_string=filter_value[0]
-                filter_string=f'"{filter_string}"'
-                filter_operator='='
-            else:
-                filter_string='","'.join(filter_value)
-                filter_string=f'("{filter_string}")'
-                filter_operator='IN'
-            
-        where.append(f'("{field_name}" {filter_operator} {filter_string})')
-    
-    if len(where)==0:
-        where_string=''
-    else:
-        x=' AND '.join(where)
-        where_string=f' WHERE {x}'
-
-    return where_string
-
 
 def get_domestic_certificates(
-        filter_by=None,  # a dict
-        fields=None,  # or a list of field names
-        data_folder=_default_data_folder,
-        database_name=_default_database_name,
-        verbose=False
+        filter_by = None,  # a dict
+        fields = None,  # or a list of field names
+        data_folder = '_data',
+        database_name = 'epc_data.sqlite',
+        verbose = False
         ):
     ""
-    return get_rows(
-            table_name='domestic_certificates',
-            filter_by=filter_by,  # a dict
-            fields=fields,  # or a list of field names
-            data_folder=data_folder,
-            database_name=database_name,
-            verbose=verbose
+    table_name = 'domestic_certificates'
+    
+    return csvw_functions_extra.get_rows(
+            table_name = table_name,
+            filter_by = filter_by,  # a dict
+            fields = fields,  # or a list of field names
+            data_folder = data_folder,
+            database_name = database_name,
+            verbose = verbose
             )
 
 
 def get_domestic_certificates_count(
-        filter_by=None,
-        group_by=None,
-        data_folder=_default_data_folder,
-        database_name=_default_database_name,
-        verbose=False
+        filter_by = None,
+        group_by = None,
+        data_folder = '_data',
+        database_name = 'epc_data.sqlite',
+        verbose = False
         ):
     ""
-    return get_row_count(
-            table_name='domestic_certificates',
-            filter_by=filter_by,
-            group_by=group_by,
-            data_folder=data_folder,
-            database_name=database_name,
-            verbose=verbose
+    table_name = 'domestic_certificates'
+    
+    return csvw_functions_extra.get_row_count(
+            table_name = table_name,
+            filter_by = filter_by,
+            group_by = group_by,
+            data_folder = data_folder,
+            database_name = database_name,
+            verbose = verbose
             )
 
 
 def get_domestic_certificates_field_names(
-        data_folder=_default_data_folder,
-        database_name=_default_database_name,
-        verbose=False
+        data_folder = '_data',
+        database_name = 'epc_data.sqlite',
+        verbose = False
         ):
     ""
-    return get_field_names(
-            table_name='domestic_certificates',
-            data_folder=data_folder,
-            database_name=database_name,
-            verbose=verbose
+    table_name = 'domestic_certificates'
+    
+    return csvw_functions_extra.get_field_names(
+            table_name = table_name,
+            data_folder = data_folder,
+            database_name = database_name,
+            verbose = verbose
             )
 
 
 def get_domestic_recommendations(
-        filter_by=None,  # a dict
-        fields=None,  # or a list of field names
-        data_folder=_default_data_folder,
-        database_name=_default_database_name,
-        verbose=False
+        filter_by = None,  # a dict
+        fields = None,  # or a list of field names
+        data_folder = '_data',
+        database_name = 'epc_data.sqlite',
+        verbose = False
         ):
     ""
-    return get_rows(
-            table_name='domestic_recommendations',
-            filter_by=filter_by,  # a dict
-            fields=fields,  # or a list of field names
-            data_folder=data_folder,
-            database_name=database_name,
-            verbose=False
+    table_name = 'domestic_recommendations'
+    
+    return csvw_functions_extra.get_rows(
+            table_name = table_name,
+            filter_by = filter_by,  # a dict
+            fields = fields,  # or a list of field names
+            data_folder = data_folder,
+            database_name = database_name,
+            verbose = verbose
             )
 
 
 def get_domestic_recommendations_count(
-        filter_by=None,
-        group_by=None,
-        data_folder=_default_data_folder,
-        database_name=_default_database_name,
-        verbose=False
+        filter_by = None,
+        group_by = None,
+        data_folder = '_data',
+        database_name = 'epc_data.sqlite',
+        verbose = False
         ):
     ""
-    return get_row_count(
-            table_name='domestic_recommendations',
-            filter_by=filter_by,
-            group_by=group_by,
-            data_folder=data_folder,
-            database_name=database_name,
-            verbose=verbose
+    table_name = 'domestic_recommendations'
+    
+    return csvw_functions_extra.get_row_count(
+            table_name = table_name,
+            filter_by = filter_by,
+            group_by = group_by,
+            data_folder = data_folder,
+            database_name = database_name,
+            verbose = verbose
             )
 
 
 def get_domestic_recommendations_field_names(
-        data_folder=_default_data_folder,
-        database_name=_default_database_name
+        data_folder = '_data',
+        database_name = 'epc_data.sqlite',
         ):
     ""
-    return get_field_names(
-            table_name='domestic_recommendations',
-            data_folder=_default_data_folder,
-            database_name=_default_database_name
+    table_name = 'domestic_recommendations'
+    
+    return csvw_functions_extra.get_field_names(
+            table_name = table_name,
+            data_folder = data_folder,
+            database_name = database_name,
             )
 
 
 
-def get_field_names(
-        table_name,
-        data_folder=_default_data_folder,
-        database_name=_default_database_name,
-        verbose=False
-        ):
-    ""
-    fp_database=os.path.join(data_folder,database_name)
-    
-    if verbose:
-        print('fp_database:',fp_database)
-        
-        
-    query=f'PRAGMA table_info({table_name});'
-    if verbose:
-        print(query)
-        
-    with sqlite3.connect(fp_database) as conn:
-        c = conn.cursor()
-        
-        return [x[1] for x in c.execute(query).fetchall()]
-    
-
-def get_row_count(
-        table_name,
-        filter_by=None,
-        group_by=None,
-        data_folder=_default_data_folder,
-        database_name=_default_database_name,
-        verbose=False
-        ):
-    ""
-    fp_database=os.path.join(data_folder,database_name)
-    if verbose:
-        print('fp_database:',fp_database)
-    
-    where_string=\
-        _get_where_string(
-            filter_by
-            )
-        
-    group_by_fields, group_by_string=\
-        _get_group_by_string(
-            group_by
-            )
-        
-    query=f"""
-        SELECT 
-            {group_by_fields} COUNT(*) AS COUNT
-        FROM 
-            {table_name} 
-        {where_string}
-        {group_by_string}
-        """
-        
-    if verbose:
-        print(query)
-            
-    with sqlite3.connect(fp_database) as conn:
-        conn.row_factory = sqlite3.Row
-        c = conn.cursor()
-        result=[dict(x) for x in c.execute(query).fetchall()]
-        
-    return result
 
 
-def get_rows(
-        table_name,
-        filter_by,  # a dict
-        fields=None,  # or a list of field names
-        data_folder=_default_data_folder,
-        database_name=_default_database_name,
-        verbose=False
-        ):
-    ""
-    fp_database=os.path.join(data_folder,database_name)
-    
-    field_string=\
-        _get_field_string(
-            fields
-            )
-    
-    where_string=\
-        _get_where_string(
-            filter_by
-            )
-        
-    query=f"""
-        SELECT 
-            {field_string}
-        FROM 
-            {table_name} 
-            {where_string}
-        """
-        
-    if verbose:
-        print(query)
-            
-    with sqlite3.connect(fp_database) as conn:
-        conn.row_factory = sqlite3.Row
-        c = conn.cursor()
-        result=[dict(x) for x in c.execute(query).fetchall()]
-        
-    return result
 
 
-def get_table_names(
-        data_folder=_default_data_folder,
-        database_name=_default_database_name
-        ):
-    ""
-    fp_database=os.path.join(data_folder,database_name)
-    with sqlite3.connect(fp_database) as conn:
-        c = conn.cursor()
-        query="SELECT * FROM sqlite_master WHERE type='table';"
-        return [x[1] for x in c.execute(query).fetchall()]
+# def get_table_names(
+#         data_folder=_default_data_folder,
+#         database_name=_default_database_name
+#         ):
+#     ""
+#     fp_database=os.path.join(data_folder,database_name)
+#     with sqlite3.connect(fp_database) as conn:
+#         c = conn.cursor()
+#         query="SELECT * FROM sqlite_master WHERE type='table';"
+#         return [x[1] for x in c.execute(query).fetchall()]
     
     
 
