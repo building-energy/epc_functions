@@ -15,7 +15,7 @@
             "http://purl.org/berg/epc_domestic_vocab#epc_datatype": "VARCHAR 64",
             "propertyUrl": "http://purl.org/berg/epc_domestic_vocab#LMK_KEY",
             "aboutUrl": "http://purl.org/berg/epc_data#Certificate_{LMK_KEY}",
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "https://purl.org/berg/csvw_functions_extra/vocab/sqlsetindex": true
         },
         {
             "name": "ADDRESS1",

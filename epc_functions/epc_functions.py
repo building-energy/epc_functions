@@ -12,7 +12,8 @@ import importlib.resources as pkg_resources
 import epc_functions
 import subprocess
 import urllib.request
-from csvw_functions import csvw_functions, csvw_functions_extra
+import csvw_functions
+import csvw_functions_extra
 import zipfile
 import datetime
 import csv
@@ -27,79 +28,184 @@ urllib.request.urlcleanup()
 
 #%% data folder
 
-
-def _filter_csv_file(
-        fp,
-        fp_out,
-        start_date,
-        end_date,
-        var='INSPECTION_DATE'
+def get_csv_zip_extract_paths_in_zip(
+        zip_filename = 'all-domestic-certificates.zip',
+        data_folder = '_data'
         ):
     ""
+    fp_zip = \
+        os.path.join(
+            data_folder,
+            zip_filename)
     
-    start_date=datetime.date.fromisoformat(start_date)
-    #print(start_date)
-    end_date=datetime.date.fromisoformat(end_date)
-    #print(end_date)
-    
-    with open(fp) as f:
-        
-        csvreader=csv.reader(f)
-        
-        with open(fp_out,'w',newline='') as f1:
-            
-            csvwriter=csv.writer(f1)
-            
-            headers=next(csvreader)
-            #print(headers)
-            
-            csvwriter.writerow(headers)
-            
-            i=headers.index(var)
-            #print(i)
-            
-            for row in csvreader:
-                
-                var_date=datetime.date.fromisoformat(row[i])
-                #print(var_date)
-                
-                if var_date >= start_date and var_date <= end_date:
-                    
-                    #print(var_date)
-                    
-                    csvwriter.writerow(row)
-                    
-                #break
-
-        
-
-
-
-def _get_csv_files_in_zip(
-        fp_zip
-        ):
-    ""
     z = zipfile.ZipFile(fp_zip)
         
-    result=z.namelist()
+    zip_extract_paths = z.namelist()
     
-    result=[x for x in result if os.path.splitext(x)[1]=='.csv']
+    csv_zip_extract_paths = [x for x in zip_extract_paths if os.path.splitext(x)[1]=='.csv']
     
-    return result
+    return csv_zip_extract_paths
 
 
-def _get_metadata_table_group_dict(
-        csv_files,
-        fp_zip
+def extract_and_import_data(
+        zip_filename = 'all-domestic-certificates.zip',
+        data_folder = '_data',
+        database_name = 'epc_data.sqlite',
+        csv_zip_extract_paths = None,
+        set_certificates = True,
+        set_recommendations = True,
+        inspection_date_start=None,
+        inspection_date_end=None,
+        verbose=False
         ):
     ""
+    
+    csv_file_names = \
+        _extract_table_group(
+            zip_filename = zip_filename,
+            data_folder = data_folder,
+            csv_zip_extract_paths = csv_zip_extract_paths,
+            set_certificates = set_certificates,
+            set_recommendations = set_recommendations,
+            inspection_date_start = inspection_date_start,
+            inspection_date_end = inspection_date_end,
+            verbose = verbose
+            )
+    
+    _import_table_group_to_sqlite(
+            data_folder = data_folder,
+            database_name = database_name,
+            csv_file_names = csv_file_names, 
+            verbose = verbose
+            )
+    
+    
+    
+def _extract_table_group(
+        zip_filename = 'all-domestic-certificates.zip',
+        data_folder = '_data',
+        csv_zip_extract_paths = None,
+        set_certificates = True,
+        set_recommendations = True,
+        inspection_date_start=None,
+        inspection_date_end=None,
+        verbose = False
+        ):
+    """
+    """
+    # saves metadata_table_group file
+    metadata_document_location = \
+        _create_metadata_table_group_file_pre_file_extraction(
+            zip_filename = zip_filename,
+            data_folder = data_folder,
+            csv_zip_extract_paths = csv_zip_extract_paths,
+            set_certificates = set_certificates,
+            set_recommendations = set_recommendations
+            )
+        
+    # extract files
+    csvw_functions_extra.download_table_group(
+        metadata_document_location = metadata_document_location,
+        data_folder = data_folder,
+        overwrite_existing_files = True,
+        verbose = verbose
+        )
+    
+    metadata_table_group_dict = \
+        csvw_functions_extra.get_metadata_table_group_dict(
+            data_folder = data_folder,
+            metadata_filename = 'epc_tables-metadata.json'
+            )
+        
+    csv_file_names = \
+        [table['https://purl.org/berg/csvw_functions_extra/vocab/csv_file_name']['@value']
+         for table in metadata_table_group_dict['tables']]
+        
+    # filter csv file
+    if not inspection_date_start is None or not inspection_date_end is None:
+        
+        for csv_file_name in csv_file_names:
+            
+            fp_csv = \
+                os.path.join(
+                    data_folder,
+                    csv_file_name
+                    )
+            
+            if verbose:
+                print(f'--- filtering {csv_file_name} ---')
+            
+            if csv_file_name.endswith('certificates.csv'):
+        
+                _filter_csv_file(
+                        fp=fp_csv,
+                        fp_out=fp_csv,
+                        start_date=inspection_date_start,
+                        end_date=inspection_date_end,
+                        var='INSPECTION_DATE'
+                        )
+
+    return csv_file_names
+
+    
+def _import_table_group_to_sqlite(
+        data_folder = '_data',
+        database_name = 'epc_data.sqlite',
+        csv_file_names = None, 
+        verbose = False
+        ):
+    """
+    """
+    csvw_functions_extra.import_table_group_to_sqlite(
+        metadata_filename = 'epc_tables-metadata.json',
+        csv_file_names = csv_file_names,
+        data_folder = data_folder,
+        database_name = database_name,
+        overwrite_existing_tables = True,
+        verbose = verbose
+        )
+
+
+def _create_metadata_table_group_file_pre_file_extraction(
+        zip_filename = 'all-domestic-certificates.zip',
+        data_folder = '_data',
+        csv_zip_extract_paths = None,
+        set_certificates = True,
+        set_recommendations = True
+        ):
+    ""
+    # # get zip filepath
+    # fp_zip = \
+    #     os.path.join(
+    #         data_folder,
+    #         zip_filename)
+    
+    # get csv_zip_extract_paths
+    csv_zip_extract_paths = \
+        csvw_functions_extra.convert_to_iterator(
+            csv_zip_extract_paths
+            )
+    
+    if len(csv_zip_extract_paths) == 0:
+        csv_zip_extract_paths = \
+            get_csv_zip_extract_paths_in_zip(
+                    zip_filename
+                    )
+            
+    # get metadata table group dict
+    url = 'https://raw.githubusercontent.com/building-energy/epc_functions/main/epc_tables-metadata.json'
+    request = urllib.request.urlopen(url)
+    metadata_table_group_dict = json.loads(
+        request.read().decode()
+        )
+    
+    
     metadata_table_group_dict = {
         "$schema":"https://raw.githubusercontent.com/stevenkfirth/csvw_metadata_json_schema/main/schema_files/table_group_description.schema.json",
         "@context": "http://www.w3.org/ns/csvw",
         "@type": "TableGroup",
         "tables": []
         }
-    
     
     metadata_schema_dict_certificates = \
         csvw_functions.validate_schema_metadata(
@@ -115,11 +221,11 @@ def _get_metadata_table_group_dict(
     metadata_schema_dict_recommendations.pop('@context')
     #print(metadata_schema_dict_recommendations)
     
-    for csv_file in csv_files:
+    for csv_zip_extract_path in csv_zip_extract_paths:
         
-        basename=os.path.basename(csv_file)
+        basename=os.path.basename(csv_zip_extract_path)
         #print('basename', basename)
-        dirname=os.path.dirname(csv_file)
+        dirname=os.path.dirname(csv_zip_extract_path)
         #print('dirname', dirname)
         
         if not basename in ['certificates.csv','recommendations.csv']:
@@ -127,40 +233,135 @@ def _get_metadata_table_group_dict(
         
         csv_file_name=f'{dirname}_{basename}'
         
+        #zip_file_name=os.path.basename(fp_zip)
+        
         metadata_table_dict={
             "@type": "Table",
-            "url": fp_zip,
-            "https://purl.org/berg/csvw_functions/vocab/csv_file_name": csv_file_name,
-            "https://purl.org/berg/csvw_functions/vocab/zip_filename": fp_zip, 
-            "https://purl.org/berg/csvw_functions/vocab/csv_zip_extract_path": csv_file,
+            "url": csv_file_name,
+            "https://purl.org/berg/csvw_functions_extra/vocab/csv_file_name": csv_file_name,
+            "https://purl.org/berg/csvw_functions_extra/vocab/zip_file_name": zip_filename, 
+            "https://purl.org/berg/csvw_functions_extra/vocab/csv_zip_extract_path": csv_zip_extract_path,
             }
         
-        if basename=='certificates.csv':
+        if set_certificates and basename=='certificates.csv':
             
             metadata_table_dict.update({
-                "https://purl.org/berg/csvw_functions/vocab/sql_table_name":'domestic_certificates',
+                "https://purl.org/berg/csvw_functions_extra/vocab/sql_table_name":'domestic_certificates',
                 'tableSchema': metadata_schema_dict_certificates
+                #'tableSchema': 'https://raw.githubusercontent.com/building-energy/epc_functions/main/epc_domestic_certificates-schema-metadata.json'
                 })
             
-        elif basename=='recommendations.csv':
+            metadata_table_group_dict['tables'].append(metadata_table_dict)
+            
+        if set_recommendations and basename=='recommendations.csv':
             
             metadata_table_dict.update({
-                "https://purl.org/berg/csvw_functions/vocab/sql_table_name":'domestic_recommendations',
+                "https://purl.org/berg/csvw_functions_extra/vocab/sql_table_name":'domestic_recommendations',
                 'tableSchema': metadata_schema_dict_recommendations
+                #'tableSchema': 'https://raw.githubusercontent.com/building-energy/epc_functions/main/epc_domestic_recommendations-schema-metadata.json'
                 })
         
-        else:
-            
-            raise Exception
-        
-        metadata_table_group_dict['tables'].append(metadata_table_dict)
+            metadata_table_group_dict['tables'].append(metadata_table_dict)
         
         #break
     
-
-    return metadata_table_group_dict
+    # save the newly created CSVW metadata object
+    fp_out = os.path.join(
+        data_folder,
+        'epc_tables-metadata.json'
+        )
+    
+    with open(fp_out,'w') as f:
+        json.dump(
+            metadata_table_group_dict,
+            f,
+            indent=4
+            )
+    
+    return fp_out
 
     
+
+
+
+def _filter_csv_file(
+        fp,
+        fp_out,
+        start_date=None,
+        end_date=None,
+        var='INSPECTION_DATE'
+        ):
+    ""
+    
+    # read original csv file
+    with open(fp) as f:
+        
+        csvreader=csv.reader(f)
+        
+        headers=next(csvreader)
+        
+        rows=[row for row in csvreader]
+        
+    
+    # write filtered csv file
+    with open(fp_out,'w',newline='') as f1:
+        
+        csvwriter=csv.writer(f1)
+        
+        
+        #print(headers)
+        
+        csvwriter.writerow(headers)
+        
+        i=headers.index(var)
+        #print(i)
+        
+        if not start_date is None:
+            
+            start_date=datetime.date.fromisoformat(start_date)
+            
+            if not end_date is None:
+                
+                end_date=datetime.date.fromisoformat(end_date)
+    
+                for row in rows:
+                    if not row[i]=='':
+                        var_date=datetime.date.fromisoformat(row[i])
+                        if var_date >= start_date and var_date <= end_date:
+                            csvwriter.writerow(row)
+                        
+            else:  # end date is None
+                
+                for row in rows:
+                    if not row[i]=='':
+                        var_date=datetime.date.fromisoformat(row[i])
+                        if var_date >= start_date:
+                            csvwriter.writerow(row)
+                
+        else:  # start date is None
+        
+            if not end_date is None:
+                
+                end_date=datetime.date.fromisoformat(end_date)
+    
+                for row in rows:
+                    if not row[i]=='':
+                        var_date=datetime.date.fromisoformat(row[i])
+                        if var_date <= end_date:
+                            csvwriter.writerow(row)
+        
+            else: # end date is None
+            
+                for row in csvreader:
+                    csvwriter.writerow(row)
+        
+                        
+                
+
+
+
+
+
 
 def set_data_folder(
         fp_zip=_default_fp_zip,
@@ -168,13 +369,17 @@ def set_data_folder(
         overwrite_existing_files=False,
         database_name=_default_database_name,
         remove_existing_tables=False,
+        inspection_date_start=None,
+        inspection_date_end=None,
+        set_certificates=True,
+        set_recommendations=True,
         verbose=False
         ):
     ""
     
     # get all csv files in epc zip file
     csv_files = \
-        _get_csv_files_in_zip(
+        get_csv_file_names_in_zip(
             fp_zip
             )
     
@@ -182,7 +387,9 @@ def set_data_folder(
     metadata_table_group_dict = \
         _get_metadata_table_group_dict(
             csv_files,
-            fp_zip
+            fp_zip,
+            set_certificates,
+            set_recommendations
             )
         
     # save metadata table group object
@@ -202,6 +409,30 @@ def set_data_folder(
             overwrite_existing_files=overwrite_existing_files,
             verbose=verbose
             )
+
+
+    # filter csv file
+    if not inspection_date_start is None or inspection_date_end is None:
+        
+        with open(fp_metadata) as f:
+            metadata_table_group_dict=json.load(f)
+        
+        for table in metadata_table_group_dict['tables']:
+            
+            csv_file_name=table['https://purl.org/berg/csvw_functions_extra/vocab/csv_file_name']['@value']
+            fp_csv=os.path.join(data_folder,csv_file_name)
+            
+            print(f'--- filtering {csv_file_name} ---')
+            
+            if csv_file_name.endswith('certificates.csv'):
+        
+                _filter_csv_file(
+                        fp=fp_csv,
+                        fp_out=fp_csv,
+                        start_date=inspection_date_start,
+                        end_date=inspection_date_end,
+                        var='INSPECTION_DATE'
+                        )
 
     #return
         

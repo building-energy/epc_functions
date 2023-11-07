@@ -15,17 +15,76 @@ import os
 
 #%% set up filepaths
 
-data_folder=os.path.join(
-    os.pardir,
-    os.pardir,
-    'Energy_Performance_Certificates_dataset',
-    '_data')
+# data_folder=os.path.join(
+#     os.pardir,
+#     os.pardir,
+#     'Energy_Performance_Certificates_dataset',
+#     '_data')
+
 
 
 #%% TestCases
 
 class TestDataFolder(unittest.TestCase):
     ""
+    
+    def test_get_csv_zip_extract_paths_in_zip(self):
+        ""
+        result = \
+            epc_functions.get_csv_zip_extract_paths_in_zip(
+                )
+        #print(len(result))
+        #print(result[0])
+        
+        self.assertEqual(
+            len(result),
+            694
+            )
+    
+        self.assertEqual(
+            result[0],
+            'domestic-E07000044-South-Hams/certificates.csv'
+            )
+        
+    def test_extract_and_import_data(self):
+        ""
+        epc_functions.extract_and_import_data(
+            csv_zip_extract_paths = 'domestic-E07000044-South-Hams/certificates.csv',
+            inspection_date_start='2021-01-01',
+            inspection_date_end='2021-12-31',
+            verbose = True
+            )
+        
+        
+    def test__extract_table_group(self):
+        ""
+        epc_functions._extract_table_group(
+            csv_zip_extract_paths = 'domestic-E07000044-South-Hams/certificates.csv',
+            inspection_date_start='2021-01-01',
+            inspection_date_end='2021-12-31',
+            verbose = False
+            )
+        
+        
+    def test__import_table_group_to_sqlite(self):
+        ""
+        epc_functions._import_table_group_to_sqlite(
+            verbose = False
+            )
+        
+
+    def test___create_metadata_table_group_file_pre_file_extraction(self):
+        ""
+        result = \
+            epc_functions._create_metadata_table_group_file_pre_file_extraction(
+                csv_zip_extract_paths = 'domestic-E07000044-South-Hams/certificates.csv'
+                )
+        #print(result)
+        self.assertEqual(
+            result,
+            '_data\epc_tables-metadata.json'
+            )
+        
     
     
     def test_filter_csv_file(self):
@@ -43,7 +102,6 @@ class TestDataFolder(unittest.TestCase):
     def _test_set_data_folder(self):
         ""
         
-        fp_zip=r'C:\Users\cvskf\OneDrive - Loughborough University\_Data\Energy_Performance_Certificates\2023-08\all-domestic-certificates.zip'
         
         epc_functions.set_data_folder(
             fp_zip=fp_zip,
@@ -57,14 +115,14 @@ class TestDataFolder(unittest.TestCase):
 class TestMainFunctions(unittest.TestCase):
     ""
     
-    def test_get_table_names(self):
+    def _test_get_table_names(self):
         ""
         
         result=epc_functions.get_table_names(data_folder=data_folder)
         #print(result)
         
 
-    def test_get_field_names(self):
+    def _test_get_field_names(self):
         ""
         
         result=epc_functions.get_field_names(
@@ -75,7 +133,7 @@ class TestMainFunctions(unittest.TestCase):
         
         
         
-    def test_get_row_count(self):
+    def _test_get_row_count(self):
         ""
         table_name='domestic_certificates'
         verbose=False
@@ -107,7 +165,7 @@ class TestMainFunctions(unittest.TestCase):
         
         
         
-    def test_get_rows(self):
+    def _test_get_rows(self):
         ""
         table_name='domestic_certificates'
         verbose=False

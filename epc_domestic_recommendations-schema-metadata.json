@@ -12,7 +12,7 @@
             "datatype": {
                 "base": "string"
             },
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "https://purl.org/berg/csvw_functions_extra/vocab/sqlsetindex": true
         },
         {
             "name": "IMPROVEMENT_ITEM",
@@ -49,7 +49,7 @@
             "datatype": {
                 "base": "integer"
             },
-            "https://purl.org/berg/csvw_functions/vocab/sqlsetindex": true
+            "https://purl.org/berg/csvw_functions_extra/vocab/sqlsetindex": true
         },
         {
             "name": "IMPROVEMENT_ID_TEXT",
