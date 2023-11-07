@@ -147,24 +147,6 @@ def _extract_table_group(
 
     return csv_file_names
 
-    
-def _import_table_group_to_sqlite(
-        data_folder = '_data',
-        database_name = 'epc_data.sqlite',
-        csv_file_names = None, 
-        verbose = False
-        ):
-    """
-    """
-    csvw_functions_extra.import_table_group_to_sqlite(
-        metadata_filename = 'epc_tables-metadata.json',
-        csv_file_names = csv_file_names,
-        data_folder = data_folder,
-        database_name = database_name,
-        overwrite_existing_tables = True,
-        verbose = verbose
-        )
-
 
 def _create_metadata_table_group_file_pre_file_extraction(
         zip_filename = 'all-domestic-certificates.zip',
@@ -281,9 +263,6 @@ def _create_metadata_table_group_file_pre_file_extraction(
     return fp_out
 
     
-
-
-
 def _filter_csv_file(
         fp,
         fp_out,
@@ -307,7 +286,6 @@ def _filter_csv_file(
     with open(fp_out,'w',newline='') as f1:
         
         csvwriter=csv.writer(f1)
-        
         
         #print(headers)
         
@@ -356,94 +334,128 @@ def _filter_csv_file(
                     csvwriter.writerow(row)
         
                         
-                
-
-
-
-
-
-
-def set_data_folder(
-        fp_zip=_default_fp_zip,
-        data_folder=_default_data_folder,
-        overwrite_existing_files=False,
-        database_name=_default_database_name,
-        remove_existing_tables=False,
-        inspection_date_start=None,
-        inspection_date_end=None,
-        set_certificates=True,
-        set_recommendations=True,
-        verbose=False
+def _import_table_group_to_sqlite(
+        data_folder = '_data',
+        database_name = 'epc_data.sqlite',
+        csv_file_names = None, 
+        verbose = False
         ):
-    ""
-    
-    # get all csv files in epc zip file
-    csv_files = \
-        get_csv_file_names_in_zip(
-            fp_zip
-            )
-    
-    # create new metadata table group object dynamically
-    metadata_table_group_dict = \
-        _get_metadata_table_group_dict(
-            csv_files,
-            fp_zip,
-            set_certificates,
-            set_recommendations
-            )
-        
-    # save metadata table group object
-    metadata_document_location=os.path.join(data_folder,'epc_tables-metadata.json')
-        
-    with open(metadata_document_location,'w') as f:
-        json.dump(metadata_table_group_dict,f,indent=4)
-        
-    #return
-    
-    # download all tables to data_folder
-    # note - this will overwrite the metadata file saved above with a normalized version
-    fp_metadata=\
-        csvw_functions_extra.download_table_group(
-            metadata_document_location,
-            data_folder=data_folder,
-            overwrite_existing_files=overwrite_existing_files,
-            verbose=verbose
-            )
-
-
-    # filter csv file
-    if not inspection_date_start is None or inspection_date_end is None:
-        
-        with open(fp_metadata) as f:
-            metadata_table_group_dict=json.load(f)
-        
-        for table in metadata_table_group_dict['tables']:
-            
-            csv_file_name=table['https://purl.org/berg/csvw_functions_extra/vocab/csv_file_name']['@value']
-            fp_csv=os.path.join(data_folder,csv_file_name)
-            
-            print(f'--- filtering {csv_file_name} ---')
-            
-            if csv_file_name.endswith('certificates.csv'):
-        
-                _filter_csv_file(
-                        fp=fp_csv,
-                        fp_out=fp_csv,
-                        start_date=inspection_date_start,
-                        end_date=inspection_date_end,
-                        var='INSPECTION_DATE'
-                        )
-
-    #return
-        
-    # import all tables to sqlite
+    """
+    """
     csvw_functions_extra.import_table_group_to_sqlite(
-        metadata_document_location=fp_metadata,
-        data_folder=data_folder,
-        database_name=database_name,
-        remove_existing_tables=remove_existing_tables,
-        verbose=verbose
+        metadata_filename = 'epc_tables-metadata.json',
+        csv_file_names = csv_file_names,
+        data_folder = data_folder,
+        database_name = database_name,
+        overwrite_existing_tables = False,
+        verbose = verbose
         )
+
+
+
+def get_epc_table_names_in_database(
+        data_folder = '_data',
+        database_name = 'epc_data.sqlite',
+        ):
+    """
+    """
+    
+    result = \
+        csvw_functions_extra.get_sql_table_names_in_database(
+            data_folder = data_folder,
+            database_name = database_name,
+            metadata_filename = 'epc_tables-metadata.json'
+            )
+    
+    return result
+    
+
+
+
+
+
+
+# def set_data_folder(
+#         fp_zip=_default_fp_zip,
+#         data_folder=_default_data_folder,
+#         overwrite_existing_files=False,
+#         database_name=_default_database_name,
+#         remove_existing_tables=False,
+#         inspection_date_start=None,
+#         inspection_date_end=None,
+#         set_certificates=True,
+#         set_recommendations=True,
+#         verbose=False
+#         ):
+#     ""
+    
+#     # get all csv files in epc zip file
+#     csv_files = \
+#         get_csv_file_names_in_zip(
+#             fp_zip
+#             )
+    
+#     # create new metadata table group object dynamically
+#     metadata_table_group_dict = \
+#         _get_metadata_table_group_dict(
+#             csv_files,
+#             fp_zip,
+#             set_certificates,
+#             set_recommendations
+#             )
+        
+#     # save metadata table group object
+#     metadata_document_location=os.path.join(data_folder,'epc_tables-metadata.json')
+        
+#     with open(metadata_document_location,'w') as f:
+#         json.dump(metadata_table_group_dict,f,indent=4)
+        
+#     #return
+    
+#     # download all tables to data_folder
+#     # note - this will overwrite the metadata file saved above with a normalized version
+#     fp_metadata=\
+#         csvw_functions_extra.download_table_group(
+#             metadata_document_location,
+#             data_folder=data_folder,
+#             overwrite_existing_files=overwrite_existing_files,
+#             verbose=verbose
+#             )
+
+
+#     # filter csv file
+#     if not inspection_date_start is None or inspection_date_end is None:
+        
+#         with open(fp_metadata) as f:
+#             metadata_table_group_dict=json.load(f)
+        
+#         for table in metadata_table_group_dict['tables']:
+            
+#             csv_file_name=table['https://purl.org/berg/csvw_functions_extra/vocab/csv_file_name']['@value']
+#             fp_csv=os.path.join(data_folder,csv_file_name)
+            
+#             print(f'--- filtering {csv_file_name} ---')
+            
+#             if csv_file_name.endswith('certificates.csv'):
+        
+#                 _filter_csv_file(
+#                         fp=fp_csv,
+#                         fp_out=fp_csv,
+#                         start_date=inspection_date_start,
+#                         end_date=inspection_date_end,
+#                         var='INSPECTION_DATE'
+#                         )
+
+#     #return
+        
+#     # import all tables to sqlite
+#     csvw_functions_extra.import_table_group_to_sqlite(
+#         metadata_document_location=fp_metadata,
+#         data_folder=data_folder,
+#         database_name=database_name,
+#         remove_existing_tables=remove_existing_tables,
+#         verbose=verbose
+#         )
 
 
 #%% main functions

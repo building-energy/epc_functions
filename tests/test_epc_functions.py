@@ -46,13 +46,14 @@ class TestDataFolder(unittest.TestCase):
             'domestic-E07000044-South-Hams/certificates.csv'
             )
         
+        
     def test_extract_and_import_data(self):
         ""
         epc_functions.extract_and_import_data(
             csv_zip_extract_paths = 'domestic-E07000044-South-Hams/certificates.csv',
             inspection_date_start='2021-01-01',
             inspection_date_end='2021-12-31',
-            verbose = True
+            verbose = False
             )
         
         
@@ -65,15 +66,7 @@ class TestDataFolder(unittest.TestCase):
             verbose = False
             )
         
-        
-    def test__import_table_group_to_sqlite(self):
-        ""
-        epc_functions._import_table_group_to_sqlite(
-            verbose = False
-            )
-        
-
-    def test___create_metadata_table_group_file_pre_file_extraction(self):
+    def test__create_metadata_table_group_file_pre_file_extraction(self):
         ""
         result = \
             epc_functions._create_metadata_table_group_file_pre_file_extraction(
@@ -85,9 +78,7 @@ class TestDataFolder(unittest.TestCase):
             '_data\epc_tables-metadata.json'
             )
         
-    
-    
-    def test_filter_csv_file(self):
+    def test__filter_csv_file(self):
         ""
         epc_functions._filter_csv_file(
             fp=r'C:\Users\cvskf\OneDrive - Loughborough University\_Git\building-energy\Energy_Performance_Certificates_dataset\_data\domestic-E06000001-Hartlepool_certificates.csv',
@@ -96,20 +87,37 @@ class TestDataFolder(unittest.TestCase):
             end_date='2021-12-31'
             )
         
-    
-    
-    
-    def _test_set_data_folder(self):
+        
+    def test__import_table_group_to_sqlite(self):
         ""
-        
-        
-        epc_functions.set_data_folder(
-            fp_zip=fp_zip,
-            #overwrite_existing_files=True,
-            #remove_existing_tables=True,
-            data_folder=data_folder,
-            verbose=True
+        epc_functions._import_table_group_to_sqlite(
+            verbose = False
             )
+        
+    
+    def test_get_epc_table_names_in_database(self):
+        ""
+        result = epc_functions.get_epc_table_names_in_database(
+            )
+        #print(result)
+        self.assertEqual(
+            result,
+            ['domestic_certificates']
+            )
+    
+    
+    
+    # def _test_set_data_folder(self):
+    #     ""
+        
+        
+    #     epc_functions.set_data_folder(
+    #         fp_zip=fp_zip,
+    #         #overwrite_existing_files=True,
+    #         #remove_existing_tables=True,
+    #         data_folder=data_folder,
+    #         verbose=True
+    #         )
         
 
 class TestMainFunctions(unittest.TestCase):
