@@ -466,6 +466,7 @@ def get_domestic_certificates(
         fields = None,  
         data_folder = '_data',
         database_name = 'epc_data.sqlite',
+        pandas = False,
         verbose = False
         ):
     ""
@@ -477,6 +478,7 @@ def get_domestic_certificates(
             fields = fields,  
             data_folder = data_folder,
             database_name = database_name,
+            pandas = pandas,
             verbose = verbose
             )
 
