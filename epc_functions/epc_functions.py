@@ -462,8 +462,8 @@ def get_epc_table_names_in_database(
 
 
 def get_domestic_certificates(
-        filter_by = None,  # a dict
-        fields = None,  # or a list of field names
+        filter_by = None,  
+        fields = None,  
         data_folder = '_data',
         database_name = 'epc_data.sqlite',
         verbose = False
@@ -473,8 +473,8 @@ def get_domestic_certificates(
     
     return csvw_functions_extra.get_rows(
             table_name = table_name,
-            filter_by = filter_by,  # a dict
-            fields = fields,  # or a list of field names
+            filter_by = filter_by,  
+            fields = fields,  
             data_folder = data_folder,
             database_name = database_name,
             verbose = verbose
@@ -518,8 +518,8 @@ def get_domestic_certificates_field_names(
 
 
 def get_domestic_recommendations(
-        filter_by = None,  # a dict
-        fields = None,  # or a list of field names
+        filter_by = None,  
+        fields = None, 
         data_folder = '_data',
         database_name = 'epc_data.sqlite',
         verbose = False
@@ -529,8 +529,8 @@ def get_domestic_recommendations(
     
     return csvw_functions_extra.get_rows(
             table_name = table_name,
-            filter_by = filter_by,  # a dict
-            fields = fields,  # or a list of field names
+            filter_by = filter_by,  
+            fields = fields,  
             data_folder = data_folder,
             database_name = database_name,
             verbose = verbose
