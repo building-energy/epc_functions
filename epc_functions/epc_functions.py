@@ -29,16 +29,11 @@ urllib.request.urlcleanup()
 #%% data folder
 
 def get_csv_zip_extract_paths_in_zip(
-        zip_filename = 'all-domestic-certificates.zip',
-        data_folder = '_data'
+        zip_filepath
         ):
     ""
-    fp_zip = \
-        os.path.join(
-            data_folder,
-            zip_filename)
     
-    z = zipfile.ZipFile(fp_zip)
+    z = zipfile.ZipFile(zip_filepath)
         
     zip_extract_paths = z.namelist()
     
@@ -47,120 +42,15 @@ def get_csv_zip_extract_paths_in_zip(
     return csv_zip_extract_paths
 
 
-def extract_and_import_data(
-        zip_filename = 'all-domestic-certificates.zip',
-        data_folder = '_data',
-        database_name = 'epc_data.sqlite',
-        csv_zip_extract_paths = None,
-        set_certificates = True,
-        set_recommendations = True,
-        inspection_date_start=None,
-        inspection_date_end=None,
-        verbose=False
-        ):
-    ""
-    
-    csv_file_names = \
-        _extract_table_group(
-            zip_filename = zip_filename,
-            data_folder = data_folder,
-            csv_zip_extract_paths = csv_zip_extract_paths,
-            set_certificates = set_certificates,
-            set_recommendations = set_recommendations,
-            inspection_date_start = inspection_date_start,
-            inspection_date_end = inspection_date_end,
-            verbose = verbose
-            )
-    
-    _import_table_group_to_sqlite(
-            data_folder = data_folder,
-            database_name = database_name,
-            csv_file_names = csv_file_names, 
-            verbose = verbose
-            )
-    
-    
-    
-def _extract_table_group(
-        zip_filename = 'all-domestic-certificates.zip',
-        data_folder = '_data',
-        csv_zip_extract_paths = None,
-        set_certificates = True,
-        set_recommendations = True,
-        inspection_date_start=None,
-        inspection_date_end=None,
-        verbose = False
-        ):
-    """
-    """
-    # saves metadata_table_group file
-    metadata_document_location = \
-        _create_metadata_table_group_file_pre_file_extraction(
-            zip_filename = zip_filename,
-            data_folder = data_folder,
-            csv_zip_extract_paths = csv_zip_extract_paths,
-            set_certificates = set_certificates,
-            set_recommendations = set_recommendations
-            )
-        
-    # extract files
-    csvw_functions_extra.download_table_group(
-        metadata_document_location = metadata_document_location,
-        data_folder = data_folder,
-        overwrite_existing_files = True,
-        verbose = verbose
-        )
-    
-    metadata_table_group_dict = \
-        csvw_functions_extra.get_metadata_table_group_dict(
-            data_folder = data_folder,
-            metadata_filename = 'epc_tables-metadata.json'
-            )
-        
-    csv_file_names = \
-        [table['https://purl.org/berg/csvw_functions_extra/vocab/csv_file_name']['@value']
-         for table in metadata_table_group_dict['tables']]
-        
-    # filter csv file
-    if not inspection_date_start is None or not inspection_date_end is None:
-        
-        for csv_file_name in csv_file_names:
-            
-            fp_csv = \
-                os.path.join(
-                    data_folder,
-                    csv_file_name
-                    )
-            
-            if verbose:
-                print(f'--- filtering {csv_file_name} ---')
-            
-            if csv_file_name.endswith('certificates.csv'):
-        
-                _filter_csv_file(
-                        fp=fp_csv,
-                        fp_out=fp_csv,
-                        start_date=inspection_date_start,
-                        end_date=inspection_date_end,
-                        var='INSPECTION_DATE'
-                        )
-
-    return csv_file_names
-
-
-def _create_metadata_table_group_file_pre_file_extraction(
-        zip_filename = 'all-domestic-certificates.zip',
-        data_folder = '_data',
+def create_metadata_table_group_file(
+        metadata_filepath,
+        zip_filepath,
         csv_zip_extract_paths = None,
         set_certificates = True,
         set_recommendations = True
         ):
     ""
-    # # get zip filepath
-    # fp_zip = \
-    #     os.path.join(
-    #         data_folder,
-    #         zip_filename)
+    zip_dir, zip_filename = os.path.split(zip_filepath)
     
     # get csv_zip_extract_paths
     csv_zip_extract_paths = \
@@ -171,7 +61,7 @@ def _create_metadata_table_group_file_pre_file_extraction(
     if len(csv_zip_extract_paths) == 0:
         csv_zip_extract_paths = \
             get_csv_zip_extract_paths_in_zip(
-                    zip_filename
+                    zip_filepath
                     )
             
     # get metadata table group dict
@@ -220,15 +110,15 @@ def _create_metadata_table_group_file_pre_file_extraction(
         metadata_table_dict={
             "@type": "Table",
             "url": csv_file_name,
-            "https://purl.org/berg/csvw_functions_extra/vocab/csv_file_name": csv_file_name,
-            "https://purl.org/berg/csvw_functions_extra/vocab/zip_file_name": zip_filename, 
-            "https://purl.org/berg/csvw_functions_extra/vocab/csv_zip_extract_path": csv_zip_extract_path,
+            "https://purl.org/berg/csvw_functions_extra/vocab/csv_file_name": {'@value': csv_file_name},
+            "https://purl.org/berg/csvw_functions_extra/vocab/zip_file_name": {'@value': zip_filepath}, 
+            "https://purl.org/berg/csvw_functions_extra/vocab/csv_zip_extract_path": {'@value': csv_zip_extract_path},
             }
         
         if set_certificates and basename=='certificates.csv':
             
             metadata_table_dict.update({
-                "https://purl.org/berg/csvw_functions_extra/vocab/sql_table_name":'domestic_certificates',
+                "https://purl.org/berg/csvw_functions_extra/vocab/sql_table_name": {'@value': 'domestic_certificates'},
                 'tableSchema': metadata_schema_dict_certificates
                 #'tableSchema': 'https://raw.githubusercontent.com/building-energy/epc_functions/main/epc_domestic_certificates-schema-metadata.json'
                 })
@@ -238,7 +128,7 @@ def _create_metadata_table_group_file_pre_file_extraction(
         if set_recommendations and basename=='recommendations.csv':
             
             metadata_table_dict.update({
-                "https://purl.org/berg/csvw_functions_extra/vocab/sql_table_name":'domestic_recommendations',
+                "https://purl.org/berg/csvw_functions_extra/vocab/sql_table_name": {'@value': 'domestic_recommendations'},
                 'tableSchema': metadata_schema_dict_recommendations
                 #'tableSchema': 'https://raw.githubusercontent.com/building-energy/epc_functions/main/epc_domestic_recommendations-schema-metadata.json'
                 })
@@ -246,107 +136,208 @@ def _create_metadata_table_group_file_pre_file_extraction(
             metadata_table_group_dict['tables'].append(metadata_table_dict)
         
         #break
-    
+        
     # save the newly created CSVW metadata object
-    fp_out = os.path.join(
-        data_folder,
-        'epc_tables-metadata.json'
-        )
-    
-    with open(fp_out,'w') as f:
+    with open(metadata_filepath,'w') as f:
         json.dump(
             metadata_table_group_dict,
             f,
             indent=4
             )
     
-    return fp_out
+    return metadata_table_group_dict
 
+
+
+
+
+# def extract_and_import_data(
+#         zip_filepath,
+#         database_filepath,
+#         csv_zip_extract_paths = None,
+#         set_certificates = True,
+#         set_recommendations = True,
+#         inspection_date_start=None,
+#         inspection_date_end=None,
+#         verbose=False
+#         ):
+#     ""
     
-def _filter_csv_file(
-        fp,
-        fp_out,
-        start_date=None,
-        end_date=None,
-        var='INSPECTION_DATE'
+#     metadata_filepath = \
+#         _extract_table_group(
+#             zip_filepath = zip_filepath,
+#             csv_zip_extract_paths = csv_zip_extract_paths,
+#             set_certificates = set_certificates,
+#             set_recommendations = set_recommendations,
+#             inspection_date_start = inspection_date_start,
+#             inspection_date_end = inspection_date_end,
+#             verbose = verbose
+#             )
+        
+#     _import_table_group_to_sqlite(
+#             metadata_filepath = metadata_filepath,
+#             database_filepath = database_filepath,
+#             verbose = verbose
+#             )
+    
+#     return metadata_filepath
+    
+def extract_csv_files_from_zip_file(
+        metadata_filepath,
+        data_folder,
+        inspection_date_start=None,
+        inspection_date_end=None,
+        verbose = False
         ):
-    ""
+    """
+    """
     
-    # read original csv file
-    with open(fp) as f:
+    def _filter_certificates_file(
+            fp,
+            fp_out,
+            start_date=None,
+            end_date=None,
+            var='INSPECTION_DATE'
+            ):
+        ""
         
-        csvreader=csv.reader(f)
-        
-        headers=next(csvreader)
-        
-        rows=[row for row in csvreader]
-        
-    
-    # write filtered csv file
-    with open(fp_out,'w',newline='') as f1:
-        
-        csvwriter=csv.writer(f1)
-        
-        #print(headers)
-        
-        csvwriter.writerow(headers)
-        
-        i=headers.index(var)
-        #print(i)
-        
-        if not start_date is None:
+        # read original csv file
+        with open(fp) as f:
             
-            start_date=datetime.date.fromisoformat(start_date)
+            csvreader=csv.reader(f)
             
-            if not end_date is None:
+            headers=next(csvreader)
+            
+            rows=[row for row in csvreader]
+            
+        
+        # write filtered csv file
+        with open(fp_out,'w',newline='') as f1:
+            
+            csvwriter=csv.writer(f1)
+            
+            #print(headers)
+            
+            csvwriter.writerow(headers)
+            
+            i=headers.index(var)
+            #print(i)
+            
+            if not start_date is None:
                 
-                end_date=datetime.date.fromisoformat(end_date)
+                start_date=datetime.date.fromisoformat(start_date)
+                
+                if not end_date is None:
+                    
+                    end_date=datetime.date.fromisoformat(end_date)
+        
+                    for row in rows:
+                        if not row[i]=='':
+                            var_date=datetime.date.fromisoformat(row[i])
+                            if var_date >= start_date and var_date <= end_date:
+                                csvwriter.writerow(row)
+                            
+                else:  # end date is None
+                    
+                    for row in rows:
+                        if not row[i]=='':
+                            var_date=datetime.date.fromisoformat(row[i])
+                            if var_date >= start_date:
+                                csvwriter.writerow(row)
+                    
+            else:  # start date is None
+            
+                if not end_date is None:
+                    
+                    end_date=datetime.date.fromisoformat(end_date)
+        
+                    for row in rows:
+                        if not row[i]=='':
+                            var_date=datetime.date.fromisoformat(row[i])
+                            if var_date <= end_date:
+                                csvwriter.writerow(row)
+            
+                else: # end date is None
+                
+                    for row in csvreader:
+                        csvwriter.writerow(row)
+            
+            
+    def _filter_recommendations_file(
+            ):
+        """
+        """
+        # TO DO
+        
+        
+        
+    # --- START ---
+        
+    # extract files
+    new_metadata_filepath = \
+        csvw_functions_extra.download_table_group(
+            metadata_document_location = metadata_filepath,
+            data_folder = data_folder,
+            overwrite_existing_files = True,
+            verbose = verbose
+            )
     
-                for row in rows:
-                    if not row[i]=='':
-                        var_date=datetime.date.fromisoformat(row[i])
-                        if var_date >= start_date and var_date <= end_date:
-                            csvwriter.writerow(row)
+    metadata_table_group_dict = \
+        csvw_functions_extra.get_metadata_table_group_dict(
+            metadata_filepath = metadata_filepath
+            )
+        
+    csv_file_names = \
+        [table['https://purl.org/berg/csvw_functions_extra/vocab/csv_file_name']['@value']
+         for table in metadata_table_group_dict['tables']]
+        
+    # filter csv file
+    if not inspection_date_start is None or not inspection_date_end is None:
+        
+        for csv_file_name in csv_file_names:
+            
+            fp_csv = \
+                os.path.join(
+                    data_folder,
+                    csv_file_name
+                    )
+            
+            if verbose:
+                print(f'--- filtering {csv_file_name} ---')
+            
+            if csv_file_name.endswith('certificates.csv'):
+        
+                _filter_certificates_file(
+                        fp=fp_csv,
+                        fp_out=fp_csv,
+                        start_date=inspection_date_start,
+                        end_date=inspection_date_end,
+                        var='INSPECTION_DATE'
+                        )
+                
+                
+            if csv_file_name.endswith('recommendations.csv'):
+                
+                pass
+                # TO DO
+                # it would be useful if a certificates csv is filtered to also filter the associated recommentation file.
+                
+
+    return new_metadata_filepath
+
+
+
                         
-            else:  # end date is None
-                
-                for row in rows:
-                    if not row[i]=='':
-                        var_date=datetime.date.fromisoformat(row[i])
-                        if var_date >= start_date:
-                            csvwriter.writerow(row)
-                
-        else:  # start date is None
-        
-            if not end_date is None:
-                
-                end_date=datetime.date.fromisoformat(end_date)
-    
-                for row in rows:
-                    if not row[i]=='':
-                        var_date=datetime.date.fromisoformat(row[i])
-                        if var_date <= end_date:
-                            csvwriter.writerow(row)
-        
-            else: # end date is None
-            
-                for row in csvreader:
-                    csvwriter.writerow(row)
-        
-                        
-def _import_table_group_to_sqlite(
-        data_folder = '_data',
-        database_name = 'epc_data.sqlite',
-        csv_file_names = None, 
+def import_table_group_to_sqlite(
+        metadata_filepath,
+        database_filepath,
         verbose = False
         ):
     """
     """
     csvw_functions_extra.import_table_group_to_sqlite(
-        metadata_filename = 'epc_tables-metadata.json',
-        csv_file_names = csv_file_names,
-        data_folder = data_folder,
-        database_name = database_name,
+        metadata_filepath = metadata_filepath,
+        database_filepath = database_filepath,
         overwrite_existing_tables = False,
         verbose = verbose
         )
@@ -354,17 +345,16 @@ def _import_table_group_to_sqlite(
 
 
 def get_epc_table_names_in_database(
-        data_folder = '_data',
-        database_name = 'epc_data.sqlite',
+        database_filepath,
+        metadata_filepath
         ):
     """
     """
     
     result = \
         csvw_functions_extra.get_sql_table_names_in_database(
-            data_folder = data_folder,
-            database_name = database_name,
-            metadata_filename = 'epc_tables-metadata.json'
+            database_filepath = database_filepath,
+            metadata_filepath = metadata_filepath
             )
     
     return result
@@ -461,12 +451,11 @@ def get_epc_table_names_in_database(
 #%% main functions
 
 
-def get_domestic_certificates(
+def get_domestic_certificates_rows(
+        database_filepath,
         filter_by = None,  
         fields = None,  
-        data_folder = '_data',
-        database_name = 'epc_data.sqlite',
-        pandas = False,
+        limit = None,
         verbose = False
         ):
     ""
@@ -476,18 +465,16 @@ def get_domestic_certificates(
             table_name = table_name,
             filter_by = filter_by,  
             fields = fields,  
-            data_folder = data_folder,
-            database_name = database_name,
-            pandas = pandas,
+            database_filepath = database_filepath,
+            limit = limit,
             verbose = verbose
             )
 
 
-def get_domestic_certificates_count(
+def get_domestic_certificates_row_count(
+        database_filepath,
         filter_by = None,
         group_by = None,
-        data_folder = '_data',
-        database_name = 'epc_data.sqlite',
         verbose = False
         ):
     ""
@@ -497,15 +484,13 @@ def get_domestic_certificates_count(
             table_name = table_name,
             filter_by = filter_by,
             group_by = group_by,
-            data_folder = data_folder,
-            database_name = database_name,
+            database_filepath = database_filepath,
             verbose = verbose
             )
 
 
 def get_domestic_certificates_field_names(
-        data_folder = '_data',
-        database_name = 'epc_data.sqlite',
+        database_filepath,
         verbose = False
         ):
     ""
@@ -513,17 +498,16 @@ def get_domestic_certificates_field_names(
     
     return csvw_functions_extra.get_field_names(
             table_name = table_name,
-            data_folder = data_folder,
-            database_name = database_name,
+            database_filepath = database_filepath,
             verbose = verbose
             )
 
 
-def get_domestic_recommendations(
+def get_domestic_recommendations_rows(
+        database_filepath,
         filter_by = None,  
         fields = None, 
-        data_folder = '_data',
-        database_name = 'epc_data.sqlite',
+        limit = None,
         verbose = False
         ):
     ""
@@ -533,17 +517,16 @@ def get_domestic_recommendations(
             table_name = table_name,
             filter_by = filter_by,  
             fields = fields,  
-            data_folder = data_folder,
-            database_name = database_name,
+            database_filepath = database_filepath,
+            limit = limit,
             verbose = verbose
             )
 
 
-def get_domestic_recommendations_count(
+def get_domestic_recommendations_row_count(
+        database_filepath,
         filter_by = None,
         group_by = None,
-        data_folder = '_data',
-        database_name = 'epc_data.sqlite',
         verbose = False
         ):
     ""
@@ -551,25 +534,24 @@ def get_domestic_recommendations_count(
     
     return csvw_functions_extra.get_row_count(
             table_name = table_name,
+            database_filepath = database_filepath,
             filter_by = filter_by,
             group_by = group_by,
-            data_folder = data_folder,
-            database_name = database_name,
             verbose = verbose
             )
 
 
 def get_domestic_recommendations_field_names(
-        data_folder = '_data',
-        database_name = 'epc_data.sqlite',
+        database_filepath,
+        verbose = False
         ):
     ""
     table_name = 'domestic_recommendations'
     
     return csvw_functions_extra.get_field_names(
             table_name = table_name,
-            data_folder = data_folder,
-            database_name = database_name,
+            database_filepath = database_filepath,
+            verbose = verbose
             )
 
 

@@ -59,14 +59,12 @@ Description: Returns a list of CSV extract paths in the EPC ZIP file.
 
 ```python
 epc_functions.get_csv_zip_extract_paths_in_zip(
-        zip_filename = 'all-domestic-certificates.zip',
-        data_folder = '_data'
+        zip_filepath 
         )
 ```
 
 Arguments:
-- **zip_filename** *(str)*: The file name of the ZIP file downloaded from the Open Data Communities website and saved in the data folder.
-- **data_folder** *(str)*: The path of the folder where the ZIP file is saved.
+- **zip_filepath** *(str)*: The filepath of the ZIP file downloaded from the Open Data Communities website and saved in the data folder.
 
 Returns *(list)*: A list of the CSV extract paths in the ZIP file.
 
@@ -77,9 +75,9 @@ Description: Extracts all the EPC data and imports all data into a SQLite databa
 
 ```python
 epc_functions.extract_and_import_data(
-        zip_filename = 'all-domestic-certificates.zip',
-        data_folder = '_data',
-        database_name = 'epc_data.sqlite',
+        zip_filepath,
+        database_filepath,
+        extract_folder,
         csv_zip_extract_paths = None,
         set_certificates = True,
         set_recommendations = True,
@@ -90,9 +88,9 @@ epc_functions.extract_and_import_data(
 ```
 
 Arguments:
-- **zip_filename** *(str)*: The file name of the ZIP file downloaded from the Open Data Communities website and saved in the data folder.
-- **data_folder** *(str)*: The path of the folder where the ZIP file is saved.
-- **database_name** *(str)*: The file name of the database.
+- **zip_filepath** *(str)*: The filepath of the ZIP file downloaded from the Open Data Communities website and saved in the data folder.
+- **database_filepath** *(str)*: The filepath of the database.
+- **extract_folder** *(str)*: The path of the folder where the ZIP file contents are extracted to.
 - **csv_zip_extract_paths** *(str or list)*: The ZIP extract path(s) of CSV files to be extracted and imported.
 - **set_certificates** *(bool)*: If True, then certificates.csv files are included; If False, they are excluded.
 - **set_recommendations** *(bool)*: If True, then recommendations.csv files are included; If False, they are excluded.

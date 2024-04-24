@@ -5,25 +5,11 @@ Created on Thu Jul 27 14:48:40 2023
 @author: cvskf
 """
 
-#%% import packages
-
 import unittest
 from epc_functions import epc_functions
 import sqlite3
 import os
 
-
-#%% set up filepaths
-
-# data_folder=os.path.join(
-#     os.pardir,
-#     os.pardir,
-#     'Energy_Performance_Certificates_dataset',
-#     '_data')
-
-
-
-#%% TestCases
 
 class TestDataFolder(unittest.TestCase):
     ""
@@ -32,9 +18,8 @@ class TestDataFolder(unittest.TestCase):
         ""
         result = \
             epc_functions.get_csv_zip_extract_paths_in_zip(
+                zip_filepath = '_data/all-domestic-certificates.zip'
                 )
-        #print(len(result))
-        #print(result[:2])
         
         self.assertEqual(
             len(result),
@@ -47,57 +32,44 @@ class TestDataFolder(unittest.TestCase):
             )
         
         
-    def _test_extract_and_import_data(self):
+    def test_create_metadata_table_group_file(self):
         ""
-        epc_functions.extract_and_import_data(
-            csv_zip_extract_paths = [
-                'domestic-E07000044-South-Hams/certificates.csv',
-                'domestic-E07000044-South-Hams/recommendations.csv'
-                ],
-            inspection_date_start='2021-01-01',
-            inspection_date_end='2021-12-31',
-            verbose = False
-            )
-        
-        
-    def _test__extract_table_group(self):
-        ""
-        epc_functions._extract_table_group(
-            csv_zip_extract_paths = [
-                'domestic-E07000044-South-Hams/certificates.csv',
-                'domestic-E07000044-South-Hams/recommendations.csv'
-                ],
-            inspection_date_start='2021-01-01',
-            inspection_date_end='2021-12-31',
-            verbose = False
-            )
-        
-        
-    def _test__create_metadata_table_group_file_pre_file_extraction(self):
-        ""
-        result = \
-            epc_functions._create_metadata_table_group_file_pre_file_extraction(
+        metadata_table_group_dict = \
+            epc_functions.create_metadata_table_group_file(
+                metadata_filepath = 'epc_tables-metadata.json',
+                zip_filepath = '_data/all-domestic-certificates.zip',
                 csv_zip_extract_paths = [
                     'domestic-E07000044-South-Hams/certificates.csv',
                     'domestic-E07000044-South-Hams/recommendations.csv'
                     ],
                 )
-        #print(result)
+        
+        self.assertTrue(isinstance(metadata_table_group_dict,dict))
+        self.assertTrue(os.path.isfile('epc_tables-metadata.json'))  # new .json file created in tests folder
+        
+        
+    def test_extract_csv_files_from_zip_file(self):
+        ""
+        new_metadata_filepath = \
+            epc_functions.extract_csv_files_from_zip_file(
+                metadata_filepath = 'epc_tables-metadata.json',
+                data_folder = '_data',
+                inspection_date_start='2021-01-01',
+                inspection_date_end='2021-12-31',
+                verbose = False
+                )
+            
         self.assertEqual(
-            result,
+            new_metadata_filepath,
             '_data\epc_tables-metadata.json'
             )
         
         
-    def test__filter_csv_file(self):
+    def test_import_table_group_to_sqlite(self):
         ""
-        
-        
-        
-        
-    def _test__import_table_group_to_sqlite(self):
-        ""
-        epc_functions._import_table_group_to_sqlite(
+        epc_functions.import_table_group_to_sqlite(
+            metadata_filepath = '_data\epc_tables-metadata.json',
+            database_filepath = '_data/epc_data.sqlite',
             verbose = False
             )
         
@@ -105,8 +77,10 @@ class TestDataFolder(unittest.TestCase):
     def test_get_epc_table_names_in_database(self):
         ""
         result = epc_functions.get_epc_table_names_in_database(
+            database_filepath = '_data/epc_data.sqlite',
+            metadata_filepath = '_data/epc_tables-metadata.json'
             )
-        #print(result)
+        
         self.assertEqual(
             result,
             [
@@ -116,16 +90,21 @@ class TestDataFolder(unittest.TestCase):
             )
     
     
-    
 
 class TestMainFunctions(unittest.TestCase):
     ""
     
     
-    def test_get_domestic_certificates(self):
+    def test_get_domestic_certificates_rows(self):
         ""
         result = \
-            epc_functions.get_domestic_certificates()
+            epc_functions.get_domestic_certificates_rows(
+                database_filepath = '_data/epc_data.sqlite',
+                filter_by = None,  
+                fields = None,  
+                limit = None,
+                verbose = False
+                )
         #print(len(result))
         #print(result[0])
     
@@ -232,10 +211,12 @@ class TestMainFunctions(unittest.TestCase):
             )
     
     
-    def test_get_domestic_certificates_count(self):
+    def test_get_domestic_certificates_row_count(self):
         ""
         result = \
-            epc_functions.get_domestic_certificates_count(
+            epc_functions.get_domestic_certificates_row_count(
+                database_filepath = '_data/epc_data.sqlite',
+                filter_by = None,
                 group_by = 'PROPERTY_TYPE',
                 verbose = False
                 )
@@ -255,6 +236,8 @@ class TestMainFunctions(unittest.TestCase):
         ""
         result = \
             epc_functions.get_domestic_certificates_field_names(
+                database_filepath = '_data/epc_data.sqlite',
+                verbose = False
                 )
         #print(result)
         self.assertEqual(
@@ -355,10 +338,15 @@ class TestMainFunctions(unittest.TestCase):
             )   
         
     
-    def test_get_domestic_recommendations(self):
+    def test_get_domestic_recommendations_rows(self):
         ""
         result = \
-            epc_functions.get_domestic_recommendations(
+            epc_functions.get_domestic_recommendations_rows(
+                database_filepath = '_data/epc_data.sqlite',
+                filter_by = None,  
+                fields = None, 
+                limit = None,
+                verbose = False
                 )
         #print(len(result))
         #print(result[0])
@@ -382,11 +370,14 @@ class TestMainFunctions(unittest.TestCase):
             )
         
         
-    def test_get_domestic_recommendations_count(self):
+    def test_get_domestic_recommendations_row_count(self):
         ""
         result = \
-            epc_functions.get_domestic_recommendations_count(
-                group_by = 'IMPROVEMENT_ID_TEXT'
+            epc_functions.get_domestic_recommendations_row_count(
+                database_filepath = '_data/epc_data.sqlite',
+                filter_by = None,
+                group_by = 'IMPROVEMENT_ID_TEXT',
+                verbose = False
                 )
         #print(result)
         
@@ -443,6 +434,8 @@ class TestMainFunctions(unittest.TestCase):
         ""
         result = \
             epc_functions.get_domestic_recommendations_field_names(
+                database_filepath = '_data/epc_data.sqlite',
+                verbose = False
                 )
         #print(result)
         
@@ -461,7 +454,6 @@ class TestMainFunctions(unittest.TestCase):
         
         
         
-#%% run unittests
 
 if __name__ == '__main__':
     
